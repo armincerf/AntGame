@@ -1,21 +1,20 @@
 package com.AntGame.View;
 
 import com.AntGame.Controller.MapController;
+import com.AntGame.Model.Helper.Colour;
 import com.AntGame.Model.TileType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.AntGame.*;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.io.IOException;
 import java.util.Random;
@@ -24,55 +23,113 @@ import java.util.Random;
  * Created by alexdavis on 01/04/15.
  */
 public class Screen2 implements Screen {
-    PolygonSprite poly;
-    PolygonSpriteBatch polyBatch = new PolygonSpriteBatch(); // To assign at the beginning
+    PolygonSprite polyRedHill;
+    PolygonSpriteBatch polyRedHillBatch = new PolygonSpriteBatch();
+    PolygonSprite polyBlackHill;
+    PolygonSpriteBatch polyBlackHillBatch = new PolygonSpriteBatch();
+    PolygonSprite polyFood;
+    PolygonSpriteBatch polyFoodBatch = new PolygonSpriteBatch();
+    PolygonSprite polyRock;
+    PolygonSpriteBatch polyRockBatch = new PolygonSpriteBatch();
+    PolygonSprite polyClear;
+    PolygonSpriteBatch polyClearBatch = new PolygonSpriteBatch();
+    // To assign at the beginning
+
+
     Texture textureSolid;
     private Table table = new Table();
-    float x, y, side, r, h;
+    float x, y,  r, h, offset, multipleX, multipleY;
+    float side = 0;
+    Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
     Random rand = new Random();
     MapController mc = new MapController();
+
+
+
 
     private TextButton button;
     private Stage stage = new Stage();
     @Override
-    public void render(float delta) {
-        polyBatch.setTransformMatrix(MyGdxGame.getCamera().view);
-        polyBatch.setProjectionMatrix(MyGdxGame.getCamera().projection);
-        Gdx.gl.glClearColor(100, 0, 10, 1); //sets clear color to black
+    public void render(float deltY){
+        Gdx.gl.glClearColor(0, 0, 0, 100); //sets clear color to black
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
         stage.act(); //update all actors
-        stage.draw(); //draw all actors on the Stage.getBatch()
+         //draw all actors on the Stage.getBatch()
+
         for (int i = 0; i < 150; i++) {
             for (int j = 0; j < 150; j++) {
-
-
-                Color color = Color.CYAN;
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
-                    color = Color.BLACK;
-                }
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
-                    color = Color.RED;
-                }
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Food)) {
-                    color = Color.GREEN;
-                }
-                if(i%2==1) {
-                    makepoly(color, (mc.getMap().getRow(i).getTile(j).getTilePosition().get_x()*18+9), mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()*14 );
+                polyClear.setSize(1,1);
+                if(i%2==1){
+                    offset = multipleX /2;
                 }
                 else{
-                    makepoly(color, (mc.getMap().getRow(i).getTile(j).getTilePosition().get_x()*18), mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()*14 );
-
+                    offset = 0;
                 }
 
-                polyBatch.begin();
-                poly.draw(polyBatch);
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
+                    polyRock.setX((mc.getMap().getRow(i).getTile(j).getTilePosition().get_x() * multipleX + offset));
+                    polyRock.setY(mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()* multipleY);
+                }
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                    if(mc.getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)){
+                        polyBlackHill.setX((mc.getMap().getRow(i).getTile(j).getTilePosition().get_x() * multipleX + offset));
+                        polyBlackHill.setY(mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()* multipleY);
+                    }
+                    else{
+                        polyRedHill.setX((mc.getMap().getRow(i).getTile(j).getTilePosition().get_x() * multipleX + offset));
+                        polyRedHill.setY(mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()* multipleY);
+                    }
+                }
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Food)) {
+                    polyFood.setX((mc.getMap().getRow(i).getTile(j).getTilePosition().get_x() * multipleX + offset));
+                    polyFood.setY(mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()* multipleY);
+                }
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
+                    polyClear.setX((mc.getMap().getRow(i).getTile(j).getTilePosition().get_x() * multipleX + offset));
+                    polyClear.setY(mc.getMap().getRow(i).getTile(j).getTilePosition().get_y()* multipleY);
+                }
 
-                polyBatch.end();
+
+
+
+                polyRockBatch.begin();
+
+                polyRock.draw(polyRockBatch);
+
+                polyRockBatch.end();
+
+                polyBlackHillBatch.begin();
+
+                polyBlackHill.draw(polyBlackHillBatch);
+
+                polyBlackHillBatch.end();
+
+                polyRedHillBatch.begin();
+
+                polyRedHill.draw(polyRedHillBatch);
+
+                polyRedHillBatch.end();
+
+                polyClearBatch.begin();
+
+                polyClear.draw(polyClearBatch);
+
+                polyClearBatch.end();
+
+                polyFoodBatch.begin();
+
+                polyFood.draw(polyFoodBatch);
+
+                polyFoodBatch.end();
+
+
+
 
             }
         }
 
 
+        stage.draw();
 
 
 
@@ -91,6 +148,26 @@ public class Screen2 implements Screen {
 
     @Override
     public void show() {
+        //anthill
+
+        polyRedHill = new PolygonSprite(getPoly(Color.RED, 0, 0));
+        polyRedHillBatch = new PolygonSpriteBatch();
+
+        polyBlackHill = new PolygonSprite(getPoly(Color.BLACK, 0, 0));
+        polyBlackHillBatch = new PolygonSpriteBatch();
+
+        polyFood = new PolygonSprite(getPoly(Color.GREEN, 0, 0));
+        polyFoodBatch = new PolygonSpriteBatch();
+
+        polyRock = new PolygonSprite(getPoly(Color.BLACK, 0, 0));
+        polyRockBatch = new PolygonSpriteBatch();
+
+        polyClear = new PolygonSprite(getPoly(Color.PINK, 0, 0));
+        polyClearBatch = new PolygonSpriteBatch();
+        multipleX = (float)Math.sqrt(3)*side;
+        multipleY = side+(side/2);
+        System.out.println(multipleX);
+
         try {
             mc.createMapFromFile("/Users/alexdavis/Downloads/test/core/assets/1.world");
         } catch (IOException e) {
@@ -130,15 +207,15 @@ public class Screen2 implements Screen {
         return degrees * Math.PI / 180;
     }
     public void makePoints(){
-        side =  8;
+        side =  5;
         h = CalculateH(side);
         r = CalculateR(side);
     }
-    public void makepoly(Color color, float x, float y){
+    public PolygonRegion getPoly(Color color, float x, float y){
 
-    this.x = x;
+        this.x = x;
         this.y = y;
-        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+
         pix.setColor(color);
         pix.fill();
         makePoints();
@@ -162,9 +239,7 @@ public class Screen2 implements Screen {
 
 
         });
-        poly = new PolygonSprite(polyReg);
-        poly.setOrigin(200,200);
-        polyBatch = new PolygonSpriteBatch();
+       return polyReg;
     }
     @Override
     public void hide() {

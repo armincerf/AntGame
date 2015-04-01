@@ -6,7 +6,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new MyGdxGame(), config);
+		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+        cfg.title = "Title";
+        cfg.height = 980;
+        cfg.width = 1820;
+        new LwjglApplication(new MyGdxGame(), cfg);
 	}
 }

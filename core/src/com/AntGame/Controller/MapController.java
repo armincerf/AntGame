@@ -96,9 +96,7 @@ public class MapController {
                     break;
 
                 line = removeSpace(line);
-                System.out.println(line.length());
 
-                System.out.println();
 
 
                 for (int i = 0; i < width; i++) {
