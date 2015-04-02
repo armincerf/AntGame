@@ -82,7 +82,7 @@ public class MapController {
             }
 
             int blank = 0;
-            int y = 0;
+            int y = height-1;
             String line = "2";
             while (true) {
 
@@ -143,7 +143,7 @@ public class MapController {
 
                     }
                 }
-                y++;
+                y--;
 
             }
 

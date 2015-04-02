@@ -9,12 +9,12 @@ import java.io.IOException;
  */
 public class testing {
     public static void main(String[] args) throws IOException {
-
+            testMap();
     }
 
     public static void testMap() throws IOException {
         MapController mc = new MapController();
-        mc.createMapFromFile("/Users/alexdavis/Downloads/test/core/assets/1.world");
+        mc.createMapFromFile("/Users/alexdavis/IdeaProjects/Ant-Game/2.world");
 
         for (int i = 0; i < mc.getMap().getHeight(); i++) {
             for (int j = 0; j < mc.getMap().getHeight(); j++) {

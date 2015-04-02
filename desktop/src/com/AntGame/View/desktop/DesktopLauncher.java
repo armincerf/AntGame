@@ -7,9 +7,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-        cfg.title = "Title";
-        cfg.height = 980;
-        cfg.width = 1820;
-        new LwjglApplication(new MyGdxGame(), cfg);
+                cfg.title = "Title";
+                cfg.height = 1080;
+                cfg.width = 1440;
+                new LwjglApplication(new MyGdxGame(), cfg);
 	}
 }
