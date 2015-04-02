@@ -11,8 +11,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -27,7 +33,6 @@ import java.util.Random;
  */
 public class Screen2 implements Screen {
 
-    PolygonSprite polySprite;
     PolygonSpriteBatch polygonSpriteBatch = new PolygonSpriteBatch();
 
     // To assign at the beginning
@@ -35,12 +40,34 @@ public class Screen2 implements Screen {
 
     Texture textureSolid;
     private Table table = new Table();
-    float x, y,  r, h, offset, multipleX, multipleY;
-    float side = 0;
+    float x, y, offset;
+
     Random rand = new Random();
     MapController mc = new MapController();
     int antX = 100, antY = 100;
+    float side = 5;
+    float h = (float) (Math.sin(DegreesToRadians(30)) * side);
+    float r = (float) (Math.cos(DegreesToRadians(30)) * side);
 
+
+    float multipleX = (float) Math.sqrt(3) * side;
+    float multipleY = side + (side / 2);
+    final float[] points = {      // vertices
+            x, y,
+            x + r, y + h,
+            x + r, y + side + h,
+            x, y + side + h + h,
+            x - r, y + side + h,
+            x - r, y + h
+
+
+    };
+    public PolygonSprite polySpriteRock = new PolygonSprite(makePoints(Color.BLACK));
+    public PolygonSprite polySpriteClear = new PolygonSprite(makePoints(Color.LIGHT_GRAY));
+    public PolygonSprite polySpriteFood = new PolygonSprite(makePoints(Color.GREEN));
+    public PolygonSprite polySpriteRHill = new PolygonSprite(makePoints(Color.RED));
+    public PolygonSprite polySpriteBHill = new PolygonSprite(makePoints(Color.BLACK));
+    public PolygonSprite polySpriteAnt = new PolygonSprite(makePoints(Color.CYAN));
 
 
 
@@ -53,8 +80,8 @@ public class Screen2 implements Screen {
         Gdx.gl.glClearColor(255, 255, 255, 100); //sets clear color to black
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
         stage.act(); //update all actors
-         //draw all actors on the Stage.getBatch()
-polygonSpriteBatch.begin();
+        //draw all actors on the Stage.getBatch()
+        polygonSpriteBatch.begin();
         for (int j = 0; j < 150; j++) {
             for (int i = 0; i < 150; i++) {
 
@@ -63,17 +90,38 @@ polygonSpriteBatch.begin();
 
 
                 if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
-                    drawCell(Color.BLACK, j, i);
+                    drawCell(polySpriteRock, j, i);
 
                 }
-               
-               
-             
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
+                    drawCell(polySpriteClear, j, i);
 
-      }
+                }
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Food)) {
+                    drawCell(polySpriteFood, j, i);
+
+                }
+                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                    if (mc.getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
+                        drawCell(polySpriteBHill, j, i);
+                    } else {
+                        drawCell(polySpriteRHill, j, i);
+
+                    }
+
+                }
+                if (mc.getMap().getRow(i).getTile(j).hasAnt()) {
+                    drawCell(polySpriteAnt, j, i);
+                }
+
+
+            }
         }
+        System.out.println("hi " + polygonSpriteBatch.maxTrianglesInBatch);
+        System.out.println("bi " + polygonSpriteBatch.renderCalls);
+
         polygonSpriteBatch.end();
-        
+
 
         mc.getMap().getRow(antY).getTile(antX).clearAnt();
         try {
@@ -84,7 +132,7 @@ polygonSpriteBatch.begin();
 
         if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)){
             mc.getMap().getRow(antY).getTile(antX).clearAnt();
-                antX--;
+            antX--;
             System.out.println(antX);
 
         }
@@ -128,11 +176,9 @@ polygonSpriteBatch.begin();
 
 
 
-
     }
 
-    private void drawCell(Color color, int x, int y) {
-        polySprite = new PolygonSprite(makePoints(color));
+    private void drawCell(PolygonSprite polySprite, int x, int y) {
         polySprite.setX(mc.getMap().getRow(y).getTile(x).getTilePosition().get_x() * multipleX + offset);
         polySprite.setY(mc.getMap().getRow(y).getTile(x).getTilePosition().get_y() * multipleY);
         polySprite.draw(polygonSpriteBatch);
@@ -160,54 +206,33 @@ polygonSpriteBatch.begin();
         }
         MainMenu.createBasicSkin();
         button = new TextButton("Back", MainMenu.skin);
-            button.addListener(new ClickListener(){
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
 
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-                                    }
-            });
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            }
+        });
 
 
-            //The elements are displayed in the order you add them.
-            //The first appear on top, the last at the bottom.
-            table.add(button).size(150,60).padBottom(20).padLeft(1000).row();
+        //The elements are displayed in the order you add them.
+        //The first appear on top, the last at the bottom.
+        table.add(button).size(150, 60).padBottom(20).padLeft(1000).row();
 
-            table.setFillParent(true);
-            stage.addActor(table);
+        table.setFillParent(true);
+        stage.addActor(table);
 
-            Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage);
 
-        }
-    public static float CalculateH(float side)
-    {
-        return (float)(Math.sin(DegreesToRadians(30)) * side);
     }
 
-    public static float CalculateR(float side)
-    {
-        return (float)(Math.cos(DegreesToRadians(30)) * side);
-    }
     public static double DegreesToRadians(double degrees)
     {
         return degrees * Math.PI / 180;
     }
+
     public PolygonRegion makePoints(Color color){
-        side =  5;
-        h = CalculateH(side);
-        r = CalculateR(side);
-        multipleX = (float)Math.sqrt(3)*side;
-        multipleY = side+(side/2);
-        float[] points = {      // vertices
-                x, y,
-                x+r, y+h,
-                x+r, y+side+h,
-                x,y+side+h+h,
-                x-r, y+side+h,
-                x-r, y+h
 
-
-        };
         return new PolygonRegion(new TextureRegion(getTexture(color)),points
                 , new short[] { //4 triangles using vertices to make hexagon
                 0, 1, 5,
@@ -224,7 +249,7 @@ polygonSpriteBatch.begin();
         pix.fill();
         textureSolid = new Texture(pix);
 
-       return textureSolid;
+        return textureSolid;
     }
     @Override
     public void hide() {
