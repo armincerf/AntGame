@@ -1,6 +1,6 @@
 package com.AntGame.View;
 
-import com.AntGame.Controller.MapController;
+import com.AntGame.Controller.GameController;
 import com.AntGame.Controller.OutOfMapException;
 import com.AntGame.Model.Ant;
 import com.AntGame.Model.Helper.Colour;
@@ -9,7 +9,6 @@ import com.AntGame.Model.Helper.Position;
 import com.AntGame.Model.TileType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -43,7 +42,6 @@ public class Screen2 implements Screen {
     float x, y, offset;
 
     Random rand = new Random();
-    MapController mc = new MapController();
     int antX = 100, antY = 100;
     float side = 5;
     float h = (float) (Math.sin(DegreesToRadians(30)) * side);
@@ -70,13 +68,14 @@ public class Screen2 implements Screen {
     public PolygonSprite polySpriteAnt = new PolygonSprite(makePoints(Color.CYAN));
 
 
-
-    private TextButton button;
+    public GameController gc;
+    private TextButton back, start;
     private Stage stage = new Stage();
     private String worldFile;
+    private boolean run = false;
 
     @Override
-    public void render(float deltY){
+    public void render(float deltY) {
         Gdx.gl.glClearColor(255, 255, 255, 100); //sets clear color to black
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
         stage.act(); //update all actors
@@ -84,103 +83,52 @@ public class Screen2 implements Screen {
         polygonSpriteBatch.begin();
         for (int j = 0; j < 150; j++) {
             for (int i = 0; i < 150; i++) {
-
-                offset = i%2==0?multipleX/2:0;
-
-
-
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
+                offset = i % 2 == 0 ? multipleX / 2 : 0;
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
                     drawCell(polySpriteRock, j, i);
-
                 }
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
                     drawCell(polySpriteClear, j, i);
-
                 }
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.Food)) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Food)) {
                     drawCell(polySpriteFood, j, i);
-
                 }
-                if (mc.getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
-                    if (mc.getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).hasAnt()) {
+                    drawCell(polySpriteAnt, j, i);
+                } else if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                    if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
                         drawCell(polySpriteBHill, j, i);
                     } else {
                         drawCell(polySpriteRHill, j, i);
-
                     }
-
                 }
-                if (mc.getMap().getRow(i).getTile(j).hasAnt()) {
-                    drawCell(polySpriteAnt, j, i);
-                }
-
-
             }
         }
-        System.out.println("hi " + polygonSpriteBatch.maxTrianglesInBatch);
-        System.out.println("bi " + polygonSpriteBatch.renderCalls);
-
         polygonSpriteBatch.end();
 
+        gc.getMapController().getMap().getRow(antY).getTile(antX).clearAnt();
 
-        mc.getMap().getRow(antY).getTile(antX).clearAnt();
-        try {
-            mc.getMap().getRow(antY).getTile(antX).putAntOnTile(new Ant(new Position(antX, antY),Colour.Black, Direction.Left));
-        } catch (OutOfMapException e) {
-            e.printStackTrace();
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4)){
-            mc.getMap().getRow(antY).getTile(antX).clearAnt();
-            antX--;
-            System.out.println(antX);
-
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6)){
-            mc.getMap().getRow(antY).getTile(antX).clearAnt();
-            antX++;
-
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1)){
-            mc.getMap().getRow(antY).getTile(antX).clearAnt();
-            if(antY%2==1) {
-                antX--;
-                antY--;
-            }
-            else{
-                antY--;
+        //game step all ants this doesnt work set as the step function needs debugging
+        /*
+        Map map = gc.getAntController().getMap();
+        if(run){
+        for (Object a : map.values()) {
+            Ant ant = (Ant) a;
+            try {
+                gc.step(ant.getID());
+            } catch (OutOfMapException e) {
+                e.printStackTrace();
             }
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3)){
-            mc.getMap().getRow(antY).getTile(antX).clearAnt();
-            antX++;
-            antY--;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_7)){
-            mc.getMap().getRow(antY).getTile(antX).clearAnt();
-            antX--;
-            antY++;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.NUMPAD_9)){
-            mc.getMap().getRow(antY).getTile(antX).clearAnt();
-            antX++;
-            antY++;
-        }
-
+        */
         stage.draw();
-
-
-
-
-
-
-
-
     }
 
+
     private void drawCell(PolygonSprite polySprite, int x, int y) {
-        polySprite.setX(mc.getMap().getRow(y).getTile(x).getTilePosition().get_x() * multipleX + offset);
-        polySprite.setY(mc.getMap().getRow(y).getTile(x).getTilePosition().get_y() * multipleY);
+        polySprite.setX(gc.getMapController().getMap().getRow(y).getTile(x).getTilePosition().get_x() * multipleX + offset);
+        polySprite.setY(gc.getMapController().getMap().getRow(y).getTile(x).getTilePosition().get_y() * multipleY);
         polySprite.draw(polygonSpriteBatch);
     }
 
@@ -191,56 +139,94 @@ public class Screen2 implements Screen {
 
     @Override
     public void show() {
-        //anthill
-
-
-
-
-
-        System.out.println(multipleX);
-
+        //ad ants to ant hill
         try {
-            mc.createMapFromFile(MainMenu.getWorld());
+            gc = new GameController();
+            gc.Initialize();
+            gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(multipleX);
+        try {
+            gc.getMapController().createMapFromFile(Splash.getWorld());
         } catch (IOException e) {
             e.printStackTrace();
         }
         MainMenu.createBasicSkin();
-        button = new TextButton("Back", MainMenu.skin);
-        button.addListener(new ClickListener() {
+        back = new TextButton("Back", MainMenu.skin);
+        back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
+        start = new TextButton("Start", MainMenu.skin);
+        start.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
 
+                run = true;
+            }
+        });
 
         //The elements are displayed in the order you add them.
         //The first appear on top, the last at the bottom.
-        table.add(button).size(150, 60).padBottom(20).padLeft(1000).row();
+        table.add(start).size(150, 60).padBottom(20).padLeft(1300).row();
+
+        table.add(back).size(150, 60).padBottom(20).padLeft(1300).row();
 
         table.setFillParent(true);
         stage.addActor(table);
+        for (int i = 0; i < 150; i++) {
+            for (int j = 0; j < 150; j++) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                    if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
+                        try {
+                            Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Left);
+                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                            gc.getAntController().addAnt(a);
+                        } catch (OutOfMapException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        try {
+                            Ant a = new Ant(new Position(j, i), Colour.Red, Direction.Left);
+                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                            gc.getAntController().addAnt(a);
+                        } catch (OutOfMapException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                }
+            }
+        }
 
         Gdx.input.setInputProcessor(stage);
 
     }
 
-    public static double DegreesToRadians(double degrees)
-    {
+    public static double DegreesToRadians(double degrees) {
         return degrees * Math.PI / 180;
     }
 
-    public PolygonRegion makePoints(Color color){
+    public PolygonRegion makePoints(Color color) {
 
-        return new PolygonRegion(new TextureRegion(getTexture(color)),points
-                , new short[] { //4 triangles using vertices to make hexagon
+        return new PolygonRegion(new TextureRegion(getTexture(color)), points
+                , new short[]{ //4 triangles using vertices to make hexagon
                 0, 1, 5,
                 1, 4, 2,
                 5, 1, 4,
                 2, 3, 4});
     }
-    public Texture getTexture(Color color){
+
+    public Texture getTexture(Color color) {
 
 
         Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -251,10 +237,12 @@ public class Screen2 implements Screen {
 
         return textureSolid;
     }
+
     @Override
     public void hide() {
         dispose();
     }
+
     @Override
     public void dispose() {
 
@@ -270,7 +258,6 @@ public class Screen2 implements Screen {
     @Override
     public void resume() {
     }
-
 
 
 }

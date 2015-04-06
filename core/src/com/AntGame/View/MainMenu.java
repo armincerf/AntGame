@@ -3,10 +3,10 @@ package com.AntGame.View;
 /**
  * Created by alexdavis on 01/04/15.
  */
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -14,14 +14,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FileFilter;
 
 public class MainMenu implements Screen {
 
@@ -29,11 +29,9 @@ public class MainMenu implements Screen {
     private Table table = new Table();
 
     public static Skin skin;
-    private static String worldFile = "";
 
     private TextButton buttonPlay ,
             buttonExit ;
-    private Label world;
 
     @Override
     public void render(float delta) {
@@ -86,35 +84,23 @@ public class MainMenu implements Screen {
         chooser.setFileFilter(filter);
         createBasicSkin();
         buttonPlay = new TextButton("Play", skin);
-        buttonExit = new TextButton("Choose a world", skin);
-        world = new Label("Chosen world = ", skin);
+        buttonExit = new TextButton("Exit", skin);
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //Same way we moved here from the Splash Screen
                 //We set it to new Splash because we got no other screens
                 //otherwise you put the screen there where you want to go
-                if(chooser.getSelectedFile() == null){
-                    world.setText("Please choose a world file first!!");
-                }
-                else {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new Screen2());
-                }
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Splash());
+
             }
         });
         buttonExit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-
-                    world.setText("Chosen world = " + chooser.getSelectedFile().getName());
-                    worldFile = chooser.getSelectedFile().getAbsolutePath();
-
-                }
-
+                System.exit(0);
             }
         });
 
@@ -123,7 +109,6 @@ public class MainMenu implements Screen {
         //The first appear on top, the last at the bottom.
         table.add(buttonPlay).size(150,60).padBottom(20).row();
         table.add(buttonExit).size(150,60).padBottom(20).row();
-        table.add(world).size(280,40).padBottom(20).row();
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -151,7 +136,4 @@ public class MainMenu implements Screen {
 
     }
 
-    public  static String getWorld(){
-        return worldFile;
-    }
 }

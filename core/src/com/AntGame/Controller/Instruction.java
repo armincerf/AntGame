@@ -11,9 +11,7 @@ import com.AntGame.Model.Helper.SenseDirection;
  */
 
 
-
-public enum Instruction {
-
+enum InstructionEnum {
     Sense,
     Mark,
     Unmark,
@@ -22,11 +20,22 @@ public enum Instruction {
     Turn,
     Move,
     Flip;
+}
 
-    public Condition condition;
+public class Instruction {
+
+
+    public Condition condition = Condition.Null;
     public Marker marker;
     public SenseDirection senseDirection;
     public int state1, state2, n;
     public Left_or_Right lr;
+    public InstructionEnum instrType;
+
+    @Override
+    public String toString() {
+        return ("Instruction type \t condition \n" + instrType + "\t\t\t\t\t" + senseDirection);
+    }
+
 
 }

@@ -39,7 +39,13 @@ public class AntController {
         return colour == Colour.Red ? Colour.Black : Colour.Red;
     }
 
+    public Map getMap() {
+        return _ants;
+    }
 
+    public void addAnt(Ant a) {
+        _ants.put(a.getID(), a);
+    }
 
 
 

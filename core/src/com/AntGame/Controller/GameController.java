@@ -1,7 +1,10 @@
 package com.AntGame.Controller;
 
 import com.AntGame.Model.Ant;
-import com.AntGame.Model.Helper.*;
+import com.AntGame.Model.Helper.Colour;
+import com.AntGame.Model.Helper.Direction;
+import com.AntGame.Model.Helper.Position;
+import com.AntGame.Model.Helper.SenseDirection;
 import com.AntGame.Model.TileType;
 
 import java.io.IOException;
@@ -14,7 +17,7 @@ public class GameController {
 
     private MapController mapController;
     private AntController antController;
-    private List<Instruction> antInstructions;
+    private List<Instruction> redAntInstructions, blackAntInstructions;
 
 
     public GameController() throws IOException {
@@ -24,20 +27,40 @@ public class GameController {
     public void Initialize() throws IOException {
         mapController = new MapController();
         antController = new AntController();
-        antInstructions = AntBrainReader.readBrainFile("brain.txt"); //TODO: IMPORT BRAIN FILE
+
     }
 
+    public void setAntInstructions(String brain1, String brain2) {
+        try {
+            redAntInstructions = AntBrainReader.readBrainFile(brain1);
+            blackAntInstructions = AntBrainReader.readBrainFile(brain2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public Instruction get_instruction(Colour colour, int state)
     {
         //TODO: ADD MULTIPLE INSTRUCTION LIST SUPPORT FOR DIFFERENT COLOURS
-        return antInstructions.get(state);
+        if (colour.equals(Colour.Black)) {
+            return blackAntInstructions.get(state);
+        } else {
+            return redAntInstructions.get(state);
+
+        }
     }
 
+    public MapController getMapController() {
+        return mapController;
+    }
 
+    public AntController getAntController() {
+        return antController;
+    }
 
 
     public boolean CellMatches(Position position, Condition condition, Colour colour)
     {
+        System.out.println(condition.toString());
         if (mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getTileType() == TileType.Rocky) {
             if(condition == Condition.Rock){
                 return true;
@@ -89,7 +112,7 @@ public class GameController {
                 a.decrementRest();
             else{
                 Instruction instr = get_instruction(a.getAntColour(),a.getBrainState());
-                switch (instr){
+                switch (instr.instrType) {
                     case Sense:
                         Position p2 = SenseDirection.sensed_cell(p, a.getAntDirection(), instr.senseDirection);
                         int s1 = CellMatches(p2, instr.condition, a.getAntColour()) ? instr.state1 : instr.state2;

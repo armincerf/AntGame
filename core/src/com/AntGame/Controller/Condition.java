@@ -13,7 +13,8 @@ public enum Condition {
     Marker,
     FoeMarker,
     Home,
-    FoeHome;
+    FoeHome,
+    Null;
 
     public int markerNum = 0;
 }

@@ -64,6 +64,7 @@ public class MapController {
 
 
         try {
+            System.out.println(filename);
             BufferedReader br = new BufferedReader(new FileReader(filename));
 
             int width = Integer.parseInt(br.readLine().toString());
@@ -426,7 +427,9 @@ public class MapController {
     }
     public boolean checkMarkerAt(Position position, Colour colour, int marker)
     {
+
         Marker m = _gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile();
+
         return m.getMarkerColour() == colour && (m.getMarkerNum() == marker);
     }
     public boolean checkIfAnyMarkerAt(Position position, Colour colour)

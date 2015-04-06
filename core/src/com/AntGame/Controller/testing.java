@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 public class testing {
     public static void main(String[] args) throws IOException {
-            testMap();
+        TestBrain();
     }
 
     public static void testMap() throws IOException {
@@ -41,9 +41,9 @@ public class testing {
     }
     public static void TestBrain()
     {
-        try { System.out.println(
-                AntBrainReader.readBrainFile("/Users/alexdavis/Downloads/test/core/assets/brain.txt")
-        );
+        try {
+            AntBrainReader.readBrainFile("C:\\Users\\Alexander\\Documents\\AntGame\\core\\assets\\brain1.brain");
+
         }catch(IOException ex){
             System.out.println(ex.getMessage());
 
