@@ -47,7 +47,8 @@ public class Tile {
     } //TODO
     public void decrementFood() { this._food--;  }
     public boolean hasAnt() {   return _antOnTile != null;  }
-    public void clearAnt(){    this._antOnTile = null;   }
+    public void clearAnt(){    this._antOnTile = null;
+    this._tileType = TileType.antHill;}
     public Ant getAntOnTile(){  return _antOnTile;  }
     public void putAntOnTile(Ant ant){     this._antOnTile = ant;}
     public Marker getMarkerOnTile() {    return _markerOnTile;    }

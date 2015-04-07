@@ -43,8 +43,9 @@ public class Ant {
         return _markerNum++ % 5;
     }
     public Direction getAntDirection() {    return _antDirection;   }
-    public void setAntDirection(Direction direction) {  this._antDirection = direction; }
-
+    public void setAntDirection(Direction direction) {  this._antDirection = direction;
+        System.out.println(direction);}
+    public void set_antPosition(Position position) { this._antPosition = position;}
 
 
 

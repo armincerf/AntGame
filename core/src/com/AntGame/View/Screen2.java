@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -40,9 +41,9 @@ public class Screen2 implements Screen {
     Texture textureSolid;
     private Table table = new Table();
     float x, y, offset;
+    int antX, antY;
 
     Random rand = new Random();
-    int antX = 100, antY = 100;
     float side = 5;
     float h = (float) (Math.sin(DegreesToRadians(30)) * side);
     float r = (float) (Math.cos(DegreesToRadians(30)) * side);
@@ -65,21 +66,39 @@ public class Screen2 implements Screen {
     public PolygonSprite polySpriteFood = new PolygonSprite(makePoints(Color.GREEN));
     public PolygonSprite polySpriteRHill = new PolygonSprite(makePoints(Color.RED));
     public PolygonSprite polySpriteBHill = new PolygonSprite(makePoints(Color.BLACK));
-    public PolygonSprite polySpriteAnt = new PolygonSprite(makePoints(Color.CYAN));
+    public PolygonSprite polySpriteRedAnt = new PolygonSprite(makePoints(Color.PINK));
+    public PolygonSprite polySpriteBlackAnt = new PolygonSprite(makePoints(Color.DARK_GRAY));
+
 
 
     public GameController gc;
-    private TextButton back, start;
+    private TextButton back, start, pause;
     private Stage stage = new Stage();
-    private String worldFile;
     private boolean run = false;
 
     @Override
     public void render(float deltY) {
+
+
         Gdx.gl.glClearColor(255, 255, 255, 100); //sets clear color to black
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
         stage.act(); //update all actors
         //draw all actors on the Stage.getBatch()
+        Map map = gc.getAntController().getMap();
+        if(run) {
+            for (Object a : map.values()) {
+                Ant ant = (Ant) a;
+
+                try {
+                    gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
+                    gc.step(ant.getID());
+                } catch (OutOfMapException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
         polygonSpriteBatch.begin();
         for (int j = 0; j < 150; j++) {
             for (int i = 0; i < 150; i++) {
@@ -94,7 +113,20 @@ public class Screen2 implements Screen {
                     drawCell(polySpriteFood, j, i);
                 }
                 if (gc.getMapController().getMap().getRow(i).getTile(j).hasAnt()) {
-                    drawCell(polySpriteAnt, j, i);
+                    if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().hasFood()) {
+                        drawCell(polySpriteFood, j, i);
+                    }
+                    else {
+                        if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)){
+                            drawCell(polySpriteBlackAnt, j, i);
+                            antX = i;
+                            antY = j;
+                        }
+                        else{
+                        drawCell(polySpriteRedAnt, j, i);
+                        }
+                     }
+
                 } else if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
                         drawCell(polySpriteBHill, j, i);
@@ -106,22 +138,11 @@ public class Screen2 implements Screen {
         }
         polygonSpriteBatch.end();
 
-        gc.getMapController().getMap().getRow(antY).getTile(antX).clearAnt();
 
         //game step all ants this doesnt work set as the step function needs debugging
-        /*
-        Map map = gc.getAntController().getMap();
-        if(run){
-        for (Object a : map.values()) {
-            Ant ant = (Ant) a;
-            try {
-                gc.step(ant.getID());
-            } catch (OutOfMapException e) {
-                e.printStackTrace();
-            }
-        }
-        }
-        */
+
+
+
         stage.draw();
     }
 
@@ -171,32 +192,49 @@ public class Screen2 implements Screen {
                 run = true;
             }
         });
+        pause = new TextButton("Pause", MainMenu.skin);
+        pause.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                run = false;
+            }
+        });
 
         //The elements are displayed in the order you add them.
         //The first appear on top, the last at the bottom.
         table.add(start).size(150, 60).padBottom(20).padLeft(1300).row();
+        table.add(pause).size(150, 60).padBottom(20).padLeft(1300).row();
 
         table.add(back).size(150, 60).padBottom(20).padLeft(1300).row();
 
         table.setFillParent(true);
         stage.addActor(table);
+        boolean aa = false;
+        boolean b = false;
         for (int i = 0; i < 150; i++) {
             for (int j = 0; j < 150; j++) {
-                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill) ) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
                         try {
-                            Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Left);
-                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
-                            gc.getAntController().addAnt(a);
+                            if(!aa) {
+                                Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Left);
+                                gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                                gc.getAntController().addAnt(a);
+                                aa = true;
+                            }
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }
 
                     } else {
                         try {
-                            Ant a = new Ant(new Position(j, i), Colour.Red, Direction.Left);
-                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
-                            gc.getAntController().addAnt(a);
+                            if(!b) {
+                                Ant a = new Ant(new Position(j, i), Colour.Red, Direction.Left);
+                                gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                                gc.getAntController().addAnt(a);
+                                b = true;
+                            }
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }

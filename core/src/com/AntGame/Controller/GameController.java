@@ -40,8 +40,10 @@ public class GameController {
     }
     public Instruction get_instruction(Colour colour, int state)
     {
+
         //TODO: ADD MULTIPLE INSTRUCTION LIST SUPPORT FOR DIFFERENT COLOURS
         if (colour.equals(Colour.Black)) {
+
             return blackAntInstructions.get(state);
         } else {
             return redAntInstructions.get(state);

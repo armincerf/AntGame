@@ -53,7 +53,6 @@ public class MapController {
     }
 
 
-    //TODO: ADD METHOD FOR CREATING MAP FROM FILES
     public void createMapFromFile(String filename) throws IOException {
 
         int amountOfRocky, amountOfRedAntHills, amountOfBlackAntHills, amountOfFood;
@@ -423,19 +422,33 @@ public class MapController {
     }
     public void clearMarkerAt(Position position, Colour colour, int marker)
     {
-        _gameMap.getRow(position.get_y()).getTile(position.get_x()).removeMarker(colour, marker);
+        if(_gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile()!=null) {
+            _gameMap.getRow(position.get_y()).getTile(position.get_x()).removeMarker(colour, marker);
+        }
     }
     public boolean checkMarkerAt(Position position, Colour colour, int marker)
     {
+        if(_gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile() != null) {
+            Marker m = _gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile();
+            return m.getMarkerColour() == colour && (m.getMarkerNum() == marker);
 
-        Marker m = _gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile();
-
-        return m.getMarkerColour() == colour && (m.getMarkerNum() == marker);
+        }
+        else{
+            return false;
+        }
     }
     public boolean checkIfAnyMarkerAt(Position position, Colour colour)
-    {
-        Marker m = _gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile();
-        return m.getMarkerColour() == colour;
+    {;
+        Marker m;
+        if(_gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile() != null) {
+             m = _gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile();
+            return m.getMarkerColour() == colour;
+        }
+        return  false; //TODO fix this
+
+
+
+
     }
 
 

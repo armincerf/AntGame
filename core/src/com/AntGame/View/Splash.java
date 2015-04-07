@@ -24,7 +24,7 @@ public class Splash implements Screen {
     private Stage stage = new Stage();
     private TextButton selectBrain1, selectBrain2, selectWorld, start, back;
     private Label brain1Label, brain2Label, worldLabel;
-    private static String brainFile1, brainFile2, worldFile;
+    private static String brainFile1 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", brainFile2 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", worldFile = "/Users/alexdavis/Downloads/test/core/assets/1.world";
     private Table table = new Table();
 
 
@@ -86,6 +86,7 @@ public class Splash implements Screen {
                     checkBrain(brainFile2, "Brain 2", reader, chooser, brain2Label);
                 }
 
+
             }
         });
         start.addListener(new ClickListener() {
@@ -94,6 +95,7 @@ public class Splash implements Screen {
                 if (brainFile1 == null) {
                     brain1Label.setText("Please choose a world file first!!");
                 } else {
+
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new Screen2());
                 }
 
