@@ -392,6 +392,7 @@ public class MapController {
 
     public void setAntAt(Position position, Ant ant) {
         _gameMap.getRow(position.get_y()).getTile(position.get_x()).putAntOnTile(ant);
+        ant.set_antPosition(position);
     }
 
     public void clearAntAt(Position position) {
@@ -399,7 +400,7 @@ public class MapController {
     }
 
 
-    //Map - Food relations
+    //Map - food relations
     public int foodAt(Position position) {
         return _gameMap.getRow(position.get_y()).getTile(position.get_x()).getFood();
     }
@@ -415,7 +416,7 @@ public class MapController {
         return _gameMap.getRow(position.get_y()).getTile(position.get_x()).isAntHill();
     }
 
-    //Map - Marker relations
+    //Map - marker relations
     public void setMarkerAt(Position position, Colour colour, int marker)
     {
         _gameMap.getRow(position.get_y()).getTile(position.get_x()).putMarkerOnTile(new Marker(colour, marker));

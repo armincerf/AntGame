@@ -14,12 +14,14 @@ import java.util.List;
 public class AntBrainReader {
 
     private static boolean correct = false;
+    private static int buffer = 0;
 
     public static List<Instruction> readBrainFile(String filename) throws IOException
     {
         BufferedReader br = new BufferedReader(new FileReader(filename));
 
         List<Instruction> instrTypeList = new ArrayList<>();
+
         String line;
         do {
             line = br.readLine();
@@ -350,59 +352,59 @@ public class AntBrainReader {
     //Most hacky parser ever,  10/10 - IGN
     public static Instruction buildInstruction(String line)
     {
-        String[] wordList = line.split("\\s");
+        String[] wordList = line.toLowerCase().split("\\s");
 
         Instruction newInstr = new Instruction();
 
         switch(wordList[0]){
-            case "Sense":
+            case "sense":
                 newInstr.instrType = InstructionEnum.Sense;
                 newInstr.senseDirection = SenseDirection.valueOf(wordList[1]);
-                newInstr.state1 = Integer.parseInt(wordList[2]);
-                newInstr.state2 = Integer.parseInt(wordList[3]);
+                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state2 = Integer.parseInt(wordList[3]) + buffer;
                 newInstr.condition = Condition.valueOf(wordList[4]);
-                if(newInstr.condition == Condition.Marker)
+                if(newInstr.condition == Condition.marker)
                     newInstr.condition.markerNum = Integer.parseInt(wordList[5]);
                 break;
-            case "Mark":
+            case "mark":
                 newInstr.instrType = InstructionEnum.Mark;
                 newInstr.marker = new Marker(Integer.parseInt(wordList[1]));
-                newInstr.state1 = Integer.parseInt(wordList[2]);
+                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
                 break;
-            case "Unmark":
+            case "unmark":
                 newInstr.instrType = InstructionEnum.Unmark;
                 newInstr.marker = new Marker(Integer.parseInt(wordList[1]));
-                newInstr.state1 = Integer.parseInt(wordList[2]);
+                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
                 break;
-            case "PickUp":
+            case "pickup":
                 newInstr.instrType = InstructionEnum.Pickup;
-                newInstr.state1 = Integer.parseInt(wordList[1]);
-                newInstr.state2 = Integer.parseInt(wordList[2]);
+                newInstr.state1 = Integer.parseInt(wordList[1]) + buffer;
+                newInstr.state2 = Integer.parseInt(wordList[2]) + buffer;
                 break;
-            case "Drop":
+            case "drop":
                 newInstr.instrType = InstructionEnum.Drop;
-                newInstr.state1 = Integer.parseInt(wordList[1]);
+                newInstr.state1 = Integer.parseInt(wordList[1]) + buffer;
                 break;
-            case "Turn":
-
+            case "turn":
                 newInstr.instrType = InstructionEnum.Turn;
                 newInstr.lr = Left_or_Right.valueOf(wordList[1]);
-                newInstr.state1 = Integer.parseInt(wordList[2]);
+                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
                 break;
-            case "Move":
+            case "move":
                 newInstr.instrType = InstructionEnum.Move;
-                newInstr.state1 = Integer.parseInt(wordList[1]);
-                newInstr.state2 = Integer.parseInt(wordList[2]);
+                newInstr.state1 = Integer.parseInt(wordList[1]) + buffer;
+                newInstr.state2 = Integer.parseInt(wordList[2]) + buffer;
                 break;
-            case "Flip":
+            case "flip":
                 newInstr.instrType = InstructionEnum.Flip;
                 newInstr.n = Integer.parseInt(wordList[1]);
-                newInstr.state1 = Integer.parseInt(wordList[2]);
-                newInstr.state2 = Integer.parseInt(wordList[3]);
+                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state2 = Integer.parseInt(wordList[3]) + buffer;
                 break;
 
             default:
                 newInstr = null;
+                System.out.println("U FUCKED UP");
                 break;
         }
         return newInstr;

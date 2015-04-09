@@ -16,6 +16,12 @@ public class Ant {
     private boolean _hasFood;
     private int _markerNum;
 
+    /**
+     * Creates a new ant object
+     * @param position The coordinates of the ant.
+     * @param colour The colour of the ant (red or black).
+     * @param direction The direction the ant is facing.
+     */
     public Ant(Position position, Colour colour, Direction direction)
     {
         this._antID = IDGenerator.AssignID();
@@ -28,11 +34,40 @@ public class Ant {
         this._hasFood = false;
     }
 
+    /**
+     *
+     * @return ID of the ant.
+     */
     public int getID(){ return _antID;  }
+
+    /**
+     *
+     * @return Position of the ant.
+     */
     public Position getAntPositon() {   return _antPosition;  }
+
+    /**
+     *
+     * @return Colour of the ant (red or black)
+     */
     public Colour getAntColour() {   return _antColour;  }
+
+    /**
+     *
+     * @return Integer representing the current brain state.
+     */
     public int getBrainState() {    return _brainState; }
+
+    /**
+     *
+     * @param state sets the ants brain state.
+     */
     public void setBrainState(int state){   this._brainState = state;   }
+
+    /**
+     *
+     * @return
+     */
     public int getResting() {   return _resting;    }
     public void setRestPeriod(int periodLength){    this._resting = periodLength;    }
     public void decrementRest(){    this._resting--;}

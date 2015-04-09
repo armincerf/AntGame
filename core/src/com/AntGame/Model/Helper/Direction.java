@@ -22,7 +22,7 @@ public enum Direction {
 
     public int turn(Left_or_Right lr)
     {
-        return lr == Left_or_Right.Left ? (_intDirection + 5) % 6 : (_intDirection + 1) % 6;
+        return lr == Left_or_Right.left ? (_intDirection + 5) % 6 : (_intDirection + 1) % 6;
     }
 
     public static Direction fromInt(int x)

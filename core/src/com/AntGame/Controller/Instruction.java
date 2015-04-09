@@ -25,7 +25,7 @@ enum InstructionEnum {
 public class Instruction {
 
 
-    public Condition condition = Condition.Null;
+    public Condition condition;
     public Marker marker;
     public SenseDirection senseDirection;
     public int state1, state2, n;

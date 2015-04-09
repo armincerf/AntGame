@@ -90,7 +90,6 @@ public class Screen2 implements Screen {
                 Ant ant = (Ant) a;
 
                 try {
-                    gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
                     gc.step(ant.getID());
                 } catch (OutOfMapException e) {
                     e.printStackTrace();
@@ -109,31 +108,37 @@ public class Screen2 implements Screen {
                 if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
                     drawCell(polySpriteClear, j, i);
                 }
-                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Food)) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
                     drawCell(polySpriteFood, j, i);
                 }
-                if (gc.getMapController().getMap().getRow(i).getTile(j).hasAnt()) {
-                    if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().hasFood()) {
-                        drawCell(polySpriteFood, j, i);
-                    }
-                    else {
-                        if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)){
-                            drawCell(polySpriteBlackAnt, j, i);
-                            antX = i;
-                            antY = j;
-                        }
-                        else{
-                        drawCell(polySpriteRedAnt, j, i);
-                        }
-                     }
 
-                } else if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
-                    if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
-                        drawCell(polySpriteBHill, j, i);
-                    } else {
-                        drawCell(polySpriteRHill, j, i);
+                try {
+                    if (gc.getMapController().isAntAt(new Position(j,i))) {
+                        if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().hasFood()) {
+                            drawCell(polySpriteRHill, j, i);
+                        }
+                        else {
+                            if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)){
+                                drawCell(polySpriteBlackAnt, j, i);
+                                antX = i;
+                                antY = j;
+                            }
+                            else{
+                            drawCell(polySpriteRedAnt, j, i);
+                            }
+                         }
+
+                    } else if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                        if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
+                            drawCell(polySpriteBHill, j, i);
+                        } else {
+                            drawCell(polySpriteRHill, j, i);
+                        }
                     }
+                } catch (OutOfMapException e) {
+                    e.printStackTrace();
                 }
+
             }
         }
         polygonSpriteBatch.end();
@@ -165,6 +170,7 @@ public class Screen2 implements Screen {
             gc = new GameController();
             gc.Initialize();
             gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -217,24 +223,22 @@ public class Screen2 implements Screen {
                 if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill) ) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
                         try {
-                            if(!aa) {
-                                Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Left);
+
+                                Ant a = new Ant(new Position(j, i), Colour.Black, Direction.UpLeft);
                                 gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
                                 gc.getAntController().addAnt(a);
-                                aa = true;
-                            }
+
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }
 
                     } else {
                         try {
-                            if(!b) {
+
                                 Ant a = new Ant(new Position(j, i), Colour.Red, Direction.Left);
                                 gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
                                 gc.getAntController().addAnt(a);
-                                b = true;
-                            }
+
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }

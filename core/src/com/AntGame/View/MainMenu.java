@@ -73,7 +73,6 @@ public class MainMenu implements Screen {
         skin.add("default", textButtonStyle);
         skin.add("default", labelStyle);
 
-
     }
 
     @Override

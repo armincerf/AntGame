@@ -6,6 +6,7 @@ import com.AntGame.Model.Helper.Direction;
 import com.AntGame.Model.Helper.Position;
 import com.AntGame.Model.Helper.SenseDirection;
 import com.AntGame.Model.TileType;
+import javafx.geometry.Pos;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,36 +63,36 @@ public class GameController {
 
     public boolean CellMatches(Position position, Condition condition, Colour colour)
     {
-        System.out.println(condition.toString());
+
         if (mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getTileType() == TileType.Rocky) {
-            if(condition == Condition.Rock){
+            if(condition == Condition.rock){
                 return true;
             }
             return false;
         } else {
 
             switch (condition){
-                case Friend:
+                case friend:
                     return mapController.isAntAt(position) && mapController.getAntAt(position).getAntColour() == colour;
-                case Foe:
+                case foe:
                     return mapController.isAntAt(position) && mapController.getAntAt(position).getAntColour() != colour;
-                case FriendWithFood:
+                case friendwithfood:
                     return mapController.isAntAt(position) && mapController.getAntAt(position).getAntColour() == colour
                             && mapController.getAntAt(position).hasFood();
-                case FoeWithFood:
+                case foewithfood:
                     return mapController.isAntAt(position) && mapController.getAntAt(position).getAntColour() != colour
                             && mapController.getAntAt(position).hasFood();
-                case Food:
+                case food:
                     return mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getFood() > 0;
-                case Rock:
+                case rock:
                     return false;
-                case Marker:
+                case marker:
                     return mapController.checkMarkerAt(position, colour, condition.markerNum);
-                case FoeMarker:
+                case foemarker:
                     return mapController.checkIfAnyMarkerAt(position, antController.otherColour(colour));
-                case Home:
+                case home:
                     return mapController.antHillAt(colour, position);
-                case FoeHome:
+                case foehome:
                     return mapController.antHillAt(antController.otherColour(colour), position);
 
 
@@ -114,6 +115,7 @@ public class GameController {
                 a.decrementRest();
             else{
                 Instruction instr = get_instruction(a.getAntColour(),a.getBrainState());
+                System.out.println(instr);
                 switch (instr.instrType) {
                     case Sense:
                         Position p2 = SenseDirection.sensed_cell(p, a.getAntDirection(), instr.senseDirection);
@@ -151,11 +153,13 @@ public class GameController {
                         break;
                     case Move:
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
+
                         if(mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky ||
                                 mapController.isAntAt(newPos)){
                             a.setBrainState(instr.state2);
                         } else {
                             mapController.clearAntAt(p);
+                            System.out.println(mapController.isAntAt(p));
                             mapController.setAntAt(newPos,a);
                             a.setBrainState(instr.state1);
                             a.setRestPeriod(14);
