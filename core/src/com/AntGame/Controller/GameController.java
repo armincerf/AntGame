@@ -6,10 +6,10 @@ import com.AntGame.Model.Helper.Direction;
 import com.AntGame.Model.Helper.Position;
 import com.AntGame.Model.Helper.SenseDirection;
 import com.AntGame.Model.TileType;
-import javafx.geometry.Pos;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Bradley on 17/03/2015.
@@ -19,6 +19,9 @@ public class GameController {
     private MapController mapController;
     private AntController antController;
     private List<Instruction> redAntInstructions, blackAntInstructions;
+    private int moves;
+    private Random rand = new Random();
+    private int blackScore, redScore;
 
 
     public GameController() throws IOException {
@@ -28,7 +31,9 @@ public class GameController {
     public void Initialize() throws IOException {
         mapController = new MapController();
         antController = new AntController();
-
+        moves = 0;
+        blackScore = 0;
+        redScore = 0;
     }
 
     public void setAntInstructions(String brain1, String brain2) {
@@ -107,15 +112,34 @@ public class GameController {
 
     }
 
+    public int getScore(Colour colour) {
+        if (colour.equals(Colour.Black)) {
+            return blackScore;
+        }
+        return redScore;
+    }
+
+    public int getMoves() {
+        return moves;
+    }
+
+    public int randomint(int n) {
+        return rand.nextInt(n);
+
+
+    }
+
     public void step(int id) throws OutOfMapException {
-        if(antController.antIsAlive(id)) {
+
+        moves++;
+
+        if (antController.antIsAlive(id)) {
             Position p = antController.findAnt(id);
             Ant a = antController.getAnt(id);
-            if(a.getResting() > 0)
+            if (a.getResting() > 0) {
                 a.decrementRest();
-            else{
-                Instruction instr = get_instruction(a.getAntColour(),a.getBrainState());
-                System.out.println(instr);
+            } else {
+                Instruction instr = get_instruction(a.getAntColour(), a.getBrainState());
                 switch (instr.instrType) {
                     case Sense:
                         Position p2 = SenseDirection.sensed_cell(p, a.getAntDirection(), instr.senseDirection);
@@ -124,24 +148,29 @@ public class GameController {
                         break;
                     case Mark:
                         mapController.setMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
-                        a.setBrainState(instr.state1);
+                            a.setBrainState(instr.state1);
                         break;
                     case Unmark:
                         mapController.clearMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
                         a.setBrainState(instr.state1);
                         break;
                     case Pickup:
-                        if(a.hasFood() || mapController.foodAt(p) == 0)
+                        if (a.hasFood() || mapController.foodAt(p) == 0)
                             a.setBrainState(instr.state2);
-                        else
-                        {
+                        else {
                             mapController.setFoodAt(p, mapController.foodAt(p) - 1);
                             a.setHasFood(true);
                             a.setBrainState(instr.state1);
                         }
                         break;
                     case Drop:
-                        if(a.hasFood()){
+                        if (a.hasFood()) {
+                            if (a.getAntColour().equals(Colour.Black)) {
+                                blackScore++;
+                            }
+                            if (a.getAntColour().equals(Colour.Red)) {
+                                redScore++;
+                            }
                             mapController.setFoodAt(p, mapController.foodAt(p) + 1);
                             a.setHasFood(false);
                         }
@@ -154,26 +183,26 @@ public class GameController {
                     case Move:
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
 
-                        if(mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky ||
-                                mapController.isAntAt(newPos)){
+                        if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky ||
+                                mapController.isAntAt(newPos)) {
                             a.setBrainState(instr.state2);
                         } else {
                             mapController.clearAntAt(p);
-                            System.out.println(mapController.isAntAt(p));
-                            mapController.setAntAt(newPos,a);
+                            mapController.setAntAt(newPos, a);
                             a.setBrainState(instr.state1);
                             a.setRestPeriod(14);
                             //TODO: CHECK IF SURROUNDED
                         }
                         break;
                     case Flip:
-                        int state = (int)(Math.random()*instr.n) == 0 ? instr.state1 : instr.state2;
+                        int state = randomint(instr.n) == 0 ? instr.state1 : instr.state2;
                         a.setBrainState(state);
                         break;
                 }
-            }
+                }
 
         }
+
     }
 
 

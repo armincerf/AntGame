@@ -1,6 +1,9 @@
 package com.AntGame.Model;
 
-import com.AntGame.Model.Helper.*;
+import com.AntGame.Model.Helper.Colour;
+import com.AntGame.Model.Helper.Direction;
+import com.AntGame.Model.Helper.IDGenerator;
+import com.AntGame.Model.Helper.Position;
 
 /**
  * Created by Bradley on 16/03/2015.
@@ -78,8 +81,10 @@ public class Ant {
         return _markerNum++ % 5;
     }
     public Direction getAntDirection() {    return _antDirection;   }
-    public void setAntDirection(Direction direction) {  this._antDirection = direction;
-        System.out.println(direction);}
+
+    public void setAntDirection(Direction direction) {
+        this._antDirection = direction;
+    }
     public void set_antPosition(Position position) { this._antPosition = position;}
 
 
