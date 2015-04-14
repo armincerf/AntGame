@@ -10,6 +10,13 @@ import com.AntGame.Controller.OutOfMapException;
 public enum SenseDirection {
     here, ahead, leftahead, rightahead;
 
+    /**
+     * Get the position of the adjacent cells in a given direction
+     * @param p position
+     * @param d direction
+     * @return position of the adjacent cells in the given direction
+     * @throws OutOfMapException
+     */
     public static Position adjacent_cell(Position p, Direction d) throws OutOfMapException {
         switch (d.getEnumeratedDirection()) {
             case 0:
@@ -29,7 +36,14 @@ public enum SenseDirection {
         }
     }
 
-
+    /**
+     * The the position of a sensed cell in a given direction
+     * @param p position
+     * @param d direction
+     * @param sd sense direction
+     * @return the position of the sensed cells
+     * @throws OutOfMapException
+     */
     public static Position sensed_cell(Position p, Direction d, SenseDirection sd) throws OutOfMapException {
         switch(sd) {
             case here:

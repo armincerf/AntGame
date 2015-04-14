@@ -22,7 +22,7 @@ public enum Direction {
     }
 
     /**
-     *
+     * Get the direction
      * @return
      */
     public int getEnumeratedDirection()
@@ -31,9 +31,9 @@ public enum Direction {
     }
 
     /**
-     *
-     * @param lr
-     * @return
+     * Get the turning direction
+     * @param lr this is either Left or Right
+     * @return The turning direction
      */
     public int turn(Left_or_Right lr)
     {
@@ -41,7 +41,7 @@ public enum Direction {
     }
 
     /**
-     *
+     * Get the direction from the number
      * @param x
      * @return
      */
