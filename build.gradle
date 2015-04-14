@@ -3,8 +3,7 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
-    dependencies {
-    }
+
 }
 
 allprojects {
@@ -26,6 +25,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
+
 }
 
 project(":desktop") {
@@ -50,9 +50,13 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:0.0.8"
         compile "com.kotcrab.vis:vis-ui:0.7.1"
+        testCompile "junit:junit:+"
+
     }
+
 }
 
 tasks.eclipse.doLast {
     delete ".project"
 }
+

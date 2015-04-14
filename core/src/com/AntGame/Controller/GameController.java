@@ -21,13 +21,18 @@ public class GameController {
     private List<Instruction> redAntInstructions, blackAntInstructions;
     private int moves;
     private Random rand = new Random();
-    private int blackScore, redScore;
+    private int blackScore, redScore, count;
 
 
     public GameController() throws IOException {
         Initialize();
     }
 
+    /**
+     * sets up map controller and ant controller and resets scores and moves
+     *
+     * @throws IOException
+     */
     public void Initialize() throws IOException {
         mapController = new MapController();
         antController = new AntController();
@@ -36,6 +41,11 @@ public class GameController {
         redScore = 0;
     }
 
+    /**
+     * Sets the instructions for each brain
+     * @param brain1 a string containing the file path of the 1st brain
+     * @param brain2 a string containing the file path of the 2nd brain
+     */
     public void setAntInstructions(String brain1, String brain2) {
         try {
             redAntInstructions = AntBrainReader.readBrainFile(brain1);
@@ -44,10 +54,16 @@ public class GameController {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Gets the instruction at a state for a colours brain
+     * @param colour color of ant
+     * @param state line number in brain
+     * @return instruction
+     */
     public Instruction get_instruction(Colour colour, int state)
     {
 
-        //TODO: ADD MULTIPLE INSTRUCTION LIST SUPPORT FOR DIFFERENT COLOURS
         if (colour.equals(Colour.Black)) {
 
             return blackAntInstructions.get(state);
@@ -57,6 +73,10 @@ public class GameController {
         }
     }
 
+    /**
+     *
+     * @return the map controller
+     */
     public MapController getMapController() {
         return mapController;
     }
@@ -65,15 +85,18 @@ public class GameController {
         return antController;
     }
 
-
+    /**
+     *
+     * @param position the position of the ant
+     * @param condition the condition to check
+     * @param colour color of the ant
+     * @return true if the cell matches the condition
+     */
     public boolean CellMatches(Position position, Condition condition, Colour colour)
     {
 
         if (mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getTileType() == TileType.Rocky) {
-            if(condition == Condition.rock){
-                return true;
-            }
-            return false;
+            return condition == Condition.rock;
         } else {
 
             switch (condition){
@@ -112,6 +135,11 @@ public class GameController {
 
     }
 
+    /**
+     * Returns the score of a specified team
+     * @param colour the colour of the team
+     * @return the score of that specific team
+     */
     public int getScore(Colour colour) {
         if (colour.equals(Colour.Black)) {
             return blackScore;
@@ -123,12 +151,27 @@ public class GameController {
         return moves;
     }
 
-    public int randomint(int n) {
+    public int randomInt(int n) {
+        /*
+        int seed = 12345;
+
+        seed = (seed * 22695477) + 1;
+        count++;
+        int value = (int) ((Math.floor((double) seed / 65536)) % 16384);
+        if (value < 0) {
+            value = ((value + 16384) % 16384);
+        }
+        int output = value % n;
+        return output;
+        */
         return rand.nextInt(n);
-
-
     }
 
+    /**
+     * This determines the action a specific ant is to take on the next turn
+     * @param id the id of the ant
+     * @throws OutOfMapException thrown if an ant exceeds the maps bounds
+     */
     public void step(int id) throws OutOfMapException {
 
         moves++;
@@ -142,19 +185,23 @@ public class GameController {
                 Instruction instr = get_instruction(a.getAntColour(), a.getBrainState());
                 switch (instr.instrType) {
                     case Sense:
+                        System.out.println("sense");
                         Position p2 = SenseDirection.sensed_cell(p, a.getAntDirection(), instr.senseDirection);
                         int s1 = CellMatches(p2, instr.condition, a.getAntColour()) ? instr.state1 : instr.state2;
                         a.setBrainState(s1);
                         break;
                     case Mark:
+                        System.out.println("mark");
                         mapController.setMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
                             a.setBrainState(instr.state1);
                         break;
                     case Unmark:
+                        System.out.println("unmark");
                         mapController.clearMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
                         a.setBrainState(instr.state1);
                         break;
                     case Pickup:
+                        System.out.println("pickup");
                         if (a.hasFood() || mapController.foodAt(p) == 0)
                             a.setBrainState(instr.state2);
                         else {
@@ -164,11 +211,12 @@ public class GameController {
                         }
                         break;
                     case Drop:
+                        System.out.println("drop");
                         if (a.hasFood()) {
-                            if (a.getAntColour().equals(Colour.Black)) {
+                            if (mapController.antHillAt(Colour.Black, p)) {
                                 blackScore++;
                             }
-                            if (a.getAntColour().equals(Colour.Red)) {
+                            if (mapController.antHillAt(Colour.Red, p)) {
                                 redScore++;
                             }
                             mapController.setFoodAt(p, mapController.foodAt(p) + 1);
@@ -177,10 +225,12 @@ public class GameController {
                         a.setBrainState(instr.state1);
                         break;
                     case Turn:
+                        System.out.println("turn");
                         a.setAntDirection(Direction.fromInt(a.getAntDirection().turn(instr.lr)));
                         a.setBrainState(instr.state1);
                         break;
                     case Move:
+                        System.out.println("move");
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
 
                         if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky ||
@@ -195,7 +245,9 @@ public class GameController {
                         }
                         break;
                     case Flip:
-                        int state = randomint(instr.n) == 0 ? instr.state1 : instr.state2;
+                        System.out.println("flip");
+                        System.out.println(randomInt(instr.n));
+                        int state = randomInt(instr.n) == 0 ? instr.state1 : instr.state2;
                         a.setBrainState(state);
                         break;
                 }

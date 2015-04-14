@@ -14,7 +14,6 @@ import java.util.List;
 public class AntBrainReader {
 
     private static boolean correct = false;
-    private static int buffer = 0;
 
     public static List<Instruction> readBrainFile(String filename) throws IOException
     {
@@ -32,7 +31,7 @@ public class AntBrainReader {
 
             instrTypeList.add(buildInstruction(line));
 
-        } while (line != null && correct);
+        } while (correct);
 
         return instrTypeList;
     }
@@ -44,7 +43,7 @@ public class AntBrainReader {
     public static void checkSyntax(String line) {
         line = line.toLowerCase();
         correct = true;
-        int index = 0;
+        int index;
 
         index = 0;
         line = line + "               $";
@@ -360,8 +359,9 @@ public class AntBrainReader {
             case "sense":
                 newInstr.instrType = InstructionEnum.Sense;
                 newInstr.senseDirection = SenseDirection.valueOf(wordList[1]);
-                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
-                newInstr.state2 = Integer.parseInt(wordList[3]) + buffer;
+
+                newInstr.state1 = Integer.parseInt(wordList[2]);
+                newInstr.state2 = Integer.parseInt(wordList[3]);
                 newInstr.condition = Condition.valueOf(wordList[4]);
                 if(newInstr.condition == Condition.marker)
                     newInstr.condition.markerNum = Integer.parseInt(wordList[5]);
@@ -369,42 +369,42 @@ public class AntBrainReader {
             case "mark":
                 newInstr.instrType = InstructionEnum.Mark;
                 newInstr.marker = new Marker(Integer.parseInt(wordList[1]));
-                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[2]);
                 break;
             case "unmark":
                 newInstr.instrType = InstructionEnum.Unmark;
                 newInstr.marker = new Marker(Integer.parseInt(wordList[1]));
-                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[2]);
                 break;
             case "pickup":
                 newInstr.instrType = InstructionEnum.Pickup;
-                newInstr.state1 = Integer.parseInt(wordList[1]) + buffer;
-                newInstr.state2 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[1]);
+                newInstr.state2 = Integer.parseInt(wordList[2]);
                 break;
             case "drop":
                 newInstr.instrType = InstructionEnum.Drop;
-                newInstr.state1 = Integer.parseInt(wordList[1]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[1]);
                 break;
             case "turn":
                 newInstr.instrType = InstructionEnum.Turn;
                 newInstr.lr = Left_or_Right.valueOf(wordList[1]);
-                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[2]);
                 break;
             case "move":
                 newInstr.instrType = InstructionEnum.Move;
-                newInstr.state1 = Integer.parseInt(wordList[1]) + buffer;
-                newInstr.state2 = Integer.parseInt(wordList[2]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[1]);
+                newInstr.state2 = Integer.parseInt(wordList[2]);
                 break;
             case "flip":
                 newInstr.instrType = InstructionEnum.Flip;
                 newInstr.n = Integer.parseInt(wordList[1]);
-                newInstr.state1 = Integer.parseInt(wordList[2]) + buffer;
-                newInstr.state2 = Integer.parseInt(wordList[3]) + buffer;
+                newInstr.state1 = Integer.parseInt(wordList[2]);
+                newInstr.state2 = Integer.parseInt(wordList[3]);
                 break;
 
             default:
                 newInstr = null;
-                System.out.println("U FUCKED UP");
+                System.out.println("command not correct");
                 break;
         }
         return newInstr;

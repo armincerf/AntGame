@@ -16,7 +16,7 @@ public class AntController {
 
     public AntController()
     {
-        _ants = new HashMap<Integer, Ant>();
+        _ants = new HashMap<>();
     }
 
     public Ant getAnt(int id)

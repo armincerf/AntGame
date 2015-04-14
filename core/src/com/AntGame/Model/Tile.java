@@ -27,12 +27,12 @@ public class Tile {
 
     public void putFood(int food) {
         this._food = food;
-        this.set_tileType(TileType.Food);
+
     }
     public int getFood(){   return _food;   }
 
     public boolean isAntHill() {
-        return _antHill == null ? false : true;
+        return _antHill != null;
     }
 
     public Colour get_antHill() {

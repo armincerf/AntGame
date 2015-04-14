@@ -69,7 +69,7 @@ public class Ant {
 
     /**
      *
-     * @return
+     * @return amount of time to rest
      */
     public int getResting() {   return _resting;    }
     public void setRestPeriod(int periodLength){    this._resting = periodLength;    }

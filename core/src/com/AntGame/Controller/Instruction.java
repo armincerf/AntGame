@@ -19,7 +19,7 @@ enum InstructionEnum {
     Drop,
     Turn,
     Move,
-    Flip;
+    Flip
 }
 
 public class Instruction {

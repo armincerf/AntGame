@@ -4,35 +4,43 @@ import com.AntGame.Controller.AntBrainReader;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.IOException;
 
-
 /**
- * Created by alexdavis on 01/04/15.
+ * Created by alexdavis on 12/04/15.
  */
-public class Splash implements Screen {
+@SuppressWarnings("ALL")
+public class Tournament implements Screen {
+
     private Stage stage = new Stage();
-    private TextButton selectBrain1, selectBrain2, selectWorld, start, back;
+    private TextButton selectBrain, selectBrain2, selectWorld, start, back;
     private Label brain1Label, brain2Label, worldLabel;
-    private static String brainFile1 = "/Users/alexdavis/Documents/AntGame/core/assets/1.brain", brainFile2 = "/Users/alexdavis/Documents/AntGame/core/assets/2.brain", worldFile = "/Users/alexdavis/Downloads/test/core/assets/1.world";
+    private static String brainFile1 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", brainFile2 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", worldFile = "/Users/alexdavis/Downloads/test/core/assets/1.world";
     private Table table = new Table();
-    final JFileChooser chooser = new JFileChooser();
-    private boolean open = false;
+    private TextField input;
+    private int players;
+
+    public Tournament(int players) {
+        this.players = players;
+        System.out.println(players);
+    }
 
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0,0,1); //sets clear color to black
+        Gdx.gl.glClearColor(0, 0, 0, 1); //sets clear color to black
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
         stage.act(); //update all actors
         stage.draw(); //draw all actors on the Stage.getBatch()
@@ -45,22 +53,61 @@ public class Splash implements Screen {
 
     @Override
     public void show() {
+        BitmapFont font = new BitmapFont();
+        Skin winSkin = new Skin();
+        winSkin.add("default", font);
+
+        //Create texture
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10, Pixmap.Format.RGB888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        winSkin.add("background", new Texture(pixmap));
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.background = winSkin.newDrawable("background", Color.BLACK);
+        windowStyle.titleFont = font;
+        windowStyle.titleFontColor = Color.WHITE;
+        winSkin.add("dialog", windowStyle);
+        //Create button style
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = winSkin.newDrawable("background", Color.GRAY);
+        textButtonStyle.down = winSkin.newDrawable("background", Color.CYAN);
+        textButtonStyle.checked = winSkin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.over = winSkin.newDrawable("background", Color.LIGHT_GRAY);
+        textButtonStyle.font = winSkin.getFont("default");
+
+        //Create label style
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.background = winSkin.newDrawable("background", Color.DARK_GRAY);
+        labelStyle.font = font;
+        labelStyle.fontColor = Color.WHITE;
+        //Create text field style
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.background = winSkin.newDrawable("background", Color.GREEN);
+        textFieldStyle.font = font;
+        textFieldStyle.fontColor = Color.WHITE;
+        winSkin.add("default", labelStyle);
+        winSkin.add("dialog", textButtonStyle);
+        winSkin.add("default", textFieldStyle);
+
         final AntBrainReader reader = new AntBrainReader();
         final JFileChooser chooser = new JFileChooser();
 
         MainMenu.createBasicSkin();
-        selectBrain1 = new TextButton("Select Brain for Player 1", MainMenu.skin);
+        selectBrain = new TextButton("Select Brain for Player 1", MainMenu.skin);
         selectBrain2 = new TextButton("Select Brain for player2", MainMenu.skin);
         selectWorld = new TextButton("Select world file", MainMenu.skin);
         start = new TextButton("Start", MainMenu.skin);
         back = new TextButton("Back", MainMenu.skin);
+
+        input = new TextField("1", winSkin);
+
 
         brain1Label = new Label("No brain selected", MainMenu.skin);
         brain2Label = new Label("No brain selected", MainMenu.skin);
         worldLabel = new Label("No world selected", MainMenu.skin);
 
 
-        selectBrain1.addListener(new ClickListener() {
+        selectBrain.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -70,29 +117,24 @@ public class Splash implements Screen {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     brain1Label.setText("Chosen world = " + chooser.getSelectedFile().getName());
                     brainFile1 = chooser.getSelectedFile().getAbsolutePath();
-                    checkBrain(brainFile1, reader, brain1Label);
+                    checkBrain(brainFile1, "Brain 1", reader, chooser, brain1Label);
                 }
 
             }
-
         });
         selectBrain2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-
-                System.out.println(1);
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
                         "BRAIN files", "brain");
                 chooser.setFileFilter(filter);
-                System.out.println(2);
                 int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     brain2Label.setText("Brain 2 = " + chooser.getSelectedFile().getName());
                     brainFile2 = chooser.getSelectedFile().getAbsolutePath();
-                    checkBrain(brainFile2, reader, brain2Label);
+                    checkBrain(brainFile2, "Brain 2", reader, chooser, brain2Label);
                 }
-                System.out.println(3);
+
 
             }
         });
@@ -134,9 +176,10 @@ public class Splash implements Screen {
             }
         });
 
-        table.add(selectBrain1).size(180, 60).padBottom(20).padRight(20);
+
+        table.add(selectBrain).size(180, 60).padBottom(20).padRight(20);
         table.add(selectWorld).size(180, 60).padBottom(20).padRight(20);
-        table.add(selectBrain2).size(180, 60).padBottom(20).row();
+
         table.add(brain1Label).size(230, 40).padBottom(20).padRight(20);
         table.add(worldLabel).size(230, 40).padBottom(20).padRight(20);
 
@@ -144,7 +187,7 @@ public class Splash implements Screen {
         table.row();
         table.add(start).size(150, 60).padBottom(20);
         table.add(back).size(150, 60).padBottom(20);
-
+        table.add(input).size(200, 60).padBottom(20);
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -154,16 +197,19 @@ public class Splash implements Screen {
 
     }
 
-    public void checkBrain(String brainFile, AntBrainReader reader, Label label) {
+    public void checkBrain(String brainFile, String brain, AntBrainReader reader, JFileChooser chooser, Label label) {
         try {
-            //noinspection AccessStaticViaInstance
-            reader.readBrainFile(brainFile);
+            AntBrainReader.readBrainFile(brainFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (reader.getCorrect()) {
             label.setText("BRAIN INVALID");
-            brainFile1 = null;
+            int returnVal = chooser.showOpenDialog(null);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                brain1Label.setText(brain + " = " + chooser.getSelectedFile().getName());
+                brainFile1 = chooser.getSelectedFile().getAbsolutePath();
+            }
         }
     }
 
@@ -171,6 +217,7 @@ public class Splash implements Screen {
     public void hide() {
         dispose();
     }
+
     @Override
     public void dispose() {
         stage.dispose();
@@ -197,5 +244,5 @@ public class Splash implements Screen {
     }
 
 
-
 }
+

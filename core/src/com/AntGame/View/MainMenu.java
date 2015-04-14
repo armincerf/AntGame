@@ -14,15 +14,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+@SuppressWarnings("ALL")
 public class MainMenu implements Screen {
 
     private Stage stage = new Stage();
@@ -30,12 +28,12 @@ public class MainMenu implements Screen {
 
     public static Skin skin;
 
-    private TextButton buttonPlay ,
+    private TextButton buttonPlay, buttonTourney,
             buttonExit ;
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 10, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
@@ -46,18 +44,18 @@ public class MainMenu implements Screen {
     }
     public static void createBasicSkin(){
 
-        //Create a font
+        //Create  font
         BitmapFont font = new BitmapFont();
         skin = new Skin();
         skin.add("default", font);
 
-        //Create a texture
+        //Create texture
         Pixmap pixmap = new Pixmap((int)Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10, Pixmap.Format.RGB888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
         skin.add("background",new Texture(pixmap));
 
-        //Create a button style
+        //Create button style
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
         textButtonStyle.down = skin.newDrawable("background", Color.CYAN);
@@ -65,13 +63,28 @@ public class MainMenu implements Screen {
         textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
         textButtonStyle.font = skin.getFont("default");
 
+        //Create label style
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.background = skin.newDrawable("background", Color.DARK_GRAY);
         labelStyle.font = font;
         labelStyle.fontColor = Color.WHITE;
 
+        //Create text field style
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.background = skin.newDrawable("background", Color.GREEN);
+        textFieldStyle.font = font;
+        textFieldStyle.fontColor = Color.WHITE;
+
+
+
+
+
+
+
         skin.add("default", textButtonStyle);
         skin.add("default", labelStyle);
+        skin.add("default", textFieldStyle);
+
 
     }
 
@@ -84,6 +97,7 @@ public class MainMenu implements Screen {
         createBasicSkin();
         buttonPlay = new TextButton("Play", skin);
         buttonExit = new TextButton("Exit", skin);
+        buttonTourney = new TextButton("Start Tournement", skin);
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -102,12 +116,22 @@ public class MainMenu implements Screen {
                 System.exit(0);
             }
         });
+        buttonTourney.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new TournamentPlayerNumberPicker());
+            }
+        });
 
 
         //The elements are displayed in the order you add them.
         //The first appear on top, the last at the bottom.
-        table.add(buttonPlay).size(150,60).padBottom(20).row();
-        table.add(buttonExit).size(150,60).padBottom(20).row();
+        table.add(buttonPlay).size(250, 60).padBottom(20).row();
+        table.add(buttonExit).size(250, 60).padBottom(20).row();
+        table.add(buttonTourney).size(250, 60).padBottom(20).row();
+
+
 
         table.setFillParent(true);
         stage.addActor(table);

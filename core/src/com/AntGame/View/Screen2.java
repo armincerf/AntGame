@@ -11,10 +11,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -29,6 +26,7 @@ import java.util.Random;
 /**
  * Created by alexdavis on 01/04/15.
  */
+@SuppressWarnings("ALL")
 public class Screen2 implements Screen {
 
     PolygonSpriteBatch polygonSpriteBatch = new PolygonSpriteBatch();
@@ -59,36 +57,44 @@ public class Screen2 implements Screen {
 
 
     };
+
     public PolygonSprite polySpriteRock = new PolygonSprite(makePoints(Color.BLACK));
     public PolygonSprite polySpriteClear = new PolygonSprite(makePoints(Color.LIGHT_GRAY));
     public PolygonSprite polySpriteFood = new PolygonSprite(makePoints(Color.GREEN));
     public PolygonSprite polySpriteRHill = new PolygonSprite(makePoints(Color.RED));
     public PolygonSprite polySpriteBHill = new PolygonSprite(makePoints(Color.BLACK));
-    public PolygonSprite polySpriteRedAnt = new PolygonSprite(makePoints(Color.PINK));
-    public PolygonSprite polySpriteBlackAnt = new PolygonSprite(makePoints(Color.DARK_GRAY));
+    public PolygonSprite polySpriteRedAnt = new PolygonSprite(makePoints(Color.PURPLE));
+    public PolygonSprite polySpriteBlackAnt = new PolygonSprite(makePoints(Color.BLUE));
 
 
 
     public GameController gc;
-    private TextButton back, start, pause, show;
+    private TextButton back, start, pause, speedUp, slowDown;
     private Label blackScore, redScore;
     private Stage stage = new Stage();
     private boolean run = false;
     private boolean draw = true;
     private int speed = 1;
     private int moves;
+    private int width, height;
     FPSLogger log = new FPSLogger();
+
+    /**
+     * This method is called up to 60 times per second (depending on PC performance)
+     * its draws a hexagon for each Tile object stored in the map controller
+     *
+     * @param deltY the number of frames rendered per second
+     */
     @Override
     public void render(float deltY) {
 
 
-        Gdx.gl.glClearColor(255, 255, 255, 100); //sets clear color to black
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
+        Gdx.gl.glClearColor(200, 200, 200, 200); //sets bg colour
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clears all objects
         stage.act(); //update all actors
-        blackScore.setText("Black Team Score = " + gc.getScore(Colour.Black));
-        redScore.setText("Red Team Score = " + gc.getScore(Colour.Red));
+        blackScore.setText("Black Score = " + gc.getScore(Colour.Black));
+        redScore.setText("Red Score = " + gc.getScore(Colour.Red));
 
-        log.log();
         //draw all actors on the Stage.getBatch()
         Map map = gc.getAntController().getMap();
         if(run) {
@@ -108,8 +114,8 @@ public class Screen2 implements Screen {
             }
         }
         polygonSpriteBatch.begin();
-        for (int j = 0; j < 150; j++) {
-            for (int i = 0; i < 150; i++) {
+        for (int j = 0; j < width; j++) {
+            for (int i = 0; i < height; i++) {
                 offset = i % 2 == 0 ? multipleX / 2 : 0;
                 if (draw) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
@@ -119,12 +125,22 @@ public class Screen2 implements Screen {
                         drawCell(polySpriteClear, j, i);
                     }
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
-                        drawCell(polySpriteFood, j, i);
+                        float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
+                        scale = (scale / 100) * 4;
+                        scale = (float) (scale + 0.6);
+                        drawCell(polySpriteClear, j, i);
+                        drawCell(polySpriteFood, j, i, scale);
+
                     }
+
                     try {
                         if (gc.getMapController().isAntAt(new Position(j, i))) {
                             if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().hasFood()) {
-                                drawCell(polySpriteRHill, j, i);
+                                if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
+                                    drawCell(polySpriteRHill, j, i);
+                                } else {
+                                    drawCell(polySpriteBHill, j, i);
+                                }
                             } else {
                                 if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
                                     drawCell(polySpriteBlackAnt, j, i);
@@ -165,6 +181,18 @@ public class Screen2 implements Screen {
         polySprite.draw(polygonSpriteBatch);
     }
 
+    private void drawCell(PolygonSprite polySprite, int x, int y, float scale) {
+        polySprite.setX(gc.getMapController().getMap().getRow(y).getTile(x).getTilePosition().get_x() * multipleX + offset);
+        polySprite.setY(gc.getMapController().getMap().getRow(y).getTile(x).getTilePosition().get_y() * multipleY);
+        if (scale < 0.9) {
+            polySprite.setScale(scale);
+
+        }
+
+        polySprite.draw(polygonSpriteBatch);
+        polySprite.setScale(1);
+    }
+
     @Override
     public void resize(int width, int height) {
 
@@ -179,20 +207,34 @@ public class Screen2 implements Screen {
             gc.Initialize();
             gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
             gc.getMapController().createMapFromFile(Splash.getWorld());
+            width = gc.getMapController().getWidth();
+            height = gc.getMapController().getHeight();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
+
+
         MainMenu.createBasicSkin();
         blackScore = new Label("Black Team Score = " + gc.getScore(Colour.Black), MainMenu.skin);
         redScore = new Label("Red Team Score = " + gc.getScore(Colour.Red), MainMenu.skin);
-        show = new TextButton("Show/Hide GUI", MainMenu.skin);
-        show.addListener(new ClickListener() {
+        speedUp = new TextButton("Speed Up", MainMenu.skin);
+        speedUp.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 speed++;
+            }
+        });
+        slowDown = new TextButton("Slow Down", MainMenu.skin);
+        slowDown.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (speed > 1) {
+                    speed--;
+                }
+                System.out.println(speed);
             }
         });
         back = new TextButton("Back", MainMenu.skin);
@@ -228,7 +270,8 @@ public class Screen2 implements Screen {
         table.add(back).size(150, 60).padBottom(20).padLeft(1300).row();
         table.add(redScore).size(150, 60).padBottom(20).padLeft(1300).row();
         table.add(blackScore).size(150, 60).padBottom(20).padLeft(1300).row();
-        table.add(show).size(150, 60).padBottom(20).padLeft(1300).row();
+        table.add(speedUp).size(150, 60).padBottom(20).padLeft(1300).row();
+        table.add(slowDown).size(150, 60).padBottom(20).padLeft(1300).row();
 
 
 
@@ -236,8 +279,8 @@ public class Screen2 implements Screen {
         stage.addActor(table);
         boolean aa = false;
         boolean b = false;
-        for (int i = 0; i < 150; i++) {
-            for (int j = 0; j < 150; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
 
                 if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill) ) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
@@ -278,6 +321,7 @@ public class Screen2 implements Screen {
                 5, 1, 4,
                 2, 3, 4});
     }
+
 
     public Texture getTexture(Color color) {
 

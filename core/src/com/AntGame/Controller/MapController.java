@@ -29,27 +29,10 @@ public class MapController {
     public Map getMap() {   return _gameMap;    }
 
 
+    private int width, height;
     public MapController()
     {
-        _gameMap = new Map(150, 150);
-    }
 
-
-
-    public void CreateEmptyMap(int width, int height)
-    {
-        for(int i = 0;i < height; i++){
-            _gameMap.setRow(i, new MapRow(i, width));
-            for(int j = 0; j < width; j++){
-                try {
-                    _gameMap.getRow(i).setTile(j, new Tile(TileType.Clear, Position.set(j, i)));
-                }
-                catch (OutOfMapException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
     }
 
 
@@ -66,8 +49,9 @@ public class MapController {
             System.out.println(filename);
             BufferedReader br = new BufferedReader(new FileReader(filename));
 
-            int width = Integer.parseInt(br.readLine().toString());
-            int height = Integer.parseInt(br.readLine().toString());
+            width = Integer.parseInt(br.readLine());
+            height = Integer.parseInt(br.readLine());
+            _gameMap = new Map(width, height);
             for(int i = 0;i < height; i++){
                 _gameMap.setRow(i, new MapRow(i, width));
                 for(int j = 0; j < width; j++){
@@ -96,9 +80,6 @@ public class MapController {
                     break;
 
                 line = removeSpace(line);
-
-
-
                 for (int i = 0; i < width; i++) {
 
 
@@ -171,6 +152,8 @@ public class MapController {
     //TODO: ADD METHOD FOR CREATING RANDOM MAP
     public void createRandomMap() {
 
+        _gameMap = new Map(150, 150);
+
         for(int i = 0;i < 150; i++){
             _gameMap.setRow(i, new MapRow(i, 150));
             for(int j = 0; j < 150; j++){
@@ -212,7 +195,7 @@ public class MapController {
             Random random = new Random();
             int randR1 = 0;
             int randR2 = 0;
-            while(okRedHillSpace == false) {
+        while (!okRedHillSpace) {
                 randR1 = random.nextInt(150);
                 randR2 = random.nextInt(150);
 
@@ -231,7 +214,7 @@ public class MapController {
             boolean okBlackHillSpace = false;
             int randB1 = 0;
             int randB2 = 0;
-            while(okBlackHillSpace == false) {
+        while (!okBlackHillSpace) {
                 randB1 = random.nextInt(150);
                 randB2 = random.nextInt(150);
                 okBlackHillSpace = checkHillSpace(randB1, randB2);
@@ -249,7 +232,7 @@ public class MapController {
                 boolean okFoodSpace = false;
                 int randF1 = 0;
                 int randF2 = 0;
-                while (okFoodSpace == false) {
+            while (!okFoodSpace) {
                     randF1 = random.nextInt(150);
                     randF2 = random.nextInt(150);
                     okFoodSpace = checkHillSpace(randF1, randF2);
@@ -258,7 +241,7 @@ public class MapController {
                 int xF = randF1;
                 int yF = randF2;
 
-                ArrayList<Position> foodPositions = new ArrayList<Position>(); //Creates rhombus shape
+            ArrayList<Position> foodPositions = new ArrayList<>(); //Creates rhombus shape
                 try {
                     for (int i = -2; i < 2; i++) {
                         foodPositions.add(new Position(xF + i, yF));
@@ -290,7 +273,7 @@ public class MapController {
                 boolean okRockSpace = false;
                 int randRockX = 0;
                 int randRockY = 0;
-                while (okRockSpace == false) {
+                while (!okRockSpace) {
                     randRockX = random.nextInt(149);
                     randRockY = random.nextInt(149);
                     int randRock = random.nextInt(6);
@@ -316,7 +299,7 @@ public class MapController {
                         randRockY += -1;
                     }
 
-                    okRockSpace = checkHillSpace(randRockX, randRockY) && _gameMap.getRow(randRockY).getTile(randRockX).getTileType().equals(TileType.Clear) ? true : false;
+                    okRockSpace = checkHillSpace(randRockX, randRockY) && _gameMap.getRow(randRockY).getTile(randRockX).getTileType().equals(TileType.Clear);
 
 
                 }
@@ -333,7 +316,7 @@ public class MapController {
 
     public ArrayList<Position> createHill(int x, int y) {
         try {
-            ArrayList<Position> temp = new ArrayList<Position>();
+            ArrayList<Position> temp = new ArrayList<>();
             Position pos1 = new Position(x, y);
             temp.add(pos1);
             for (int i = -2; i < 2; i++) {
@@ -413,7 +396,7 @@ public class MapController {
     //Map - Anthill relations
     public boolean antHillAt(Colour colour, Position position)
     {
-        return _gameMap.getRow(position.get_y()).getTile(position.get_x()).isAntHill();
+        return _gameMap.getRow(position.get_y()).getTile(position.get_x()).isAntHill() && _gameMap.getRow(position.get_y()).getTile(position.get_x()).get_antHill().equals(colour);
     }
 
     //Map - marker relations
@@ -438,8 +421,7 @@ public class MapController {
             return false;
         }
     }
-    public boolean checkIfAnyMarkerAt(Position position, Colour colour)
-    {;
+    public boolean checkIfAnyMarkerAt(Position position, Colour colour) {
         Marker m;
         if(_gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile() != null) {
              m = _gameMap.getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile();
@@ -448,8 +430,14 @@ public class MapController {
         return  false; //TODO fix this
 
 
+    }
 
+    public int getWidth() {
+        return width;
+    }
 
+    public int getHeight() {
+        return height;
     }
 
 
