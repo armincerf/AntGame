@@ -366,7 +366,7 @@ public class MapController {
 
     //Map - Ant relations
     public boolean isAntAt(Position position) {
-        return _gameMap.getRow(position.get_y()).getTile(position.get_x()).hasAnt();
+        return _gameMap.getRow(position.get_y()).getTile(position.get_x()).hasAliveAnt();
     }
 
     public Ant getAntAt(Position position) {

@@ -38,53 +38,91 @@ public class Ant {
     }
 
     /**
-     *
+     * Get the id of the ant
      * @return ID of the ant.
      */
     public int getID(){ return _antID;  }
 
     /**
-     *
+     * Get the position of the ant
      * @return Position of the ant.
      */
     public Position getAntPositon() {   return _antPosition;  }
 
     /**
-     *
+     * Get the colour of the ant
      * @return Colour of the ant (red or black)
      */
     public Colour getAntColour() {   return _antColour;  }
 
     /**
-     *
+     * Get the integer brain state
      * @return Integer representing the current brain state.
      */
     public int getBrainState() {    return _brainState; }
 
     /**
-     *
+     * Set the ants brain state
      * @param state sets the ants brain state.
      */
     public void setBrainState(int state){   this._brainState = state;   }
 
     /**
-     *
+     * Get the amount of time to rest
      * @return amount of time to rest
      */
     public int getResting() {   return _resting;    }
+
+    /**
+     * Set the amount of time to rest
+     * @param periodLength amount of time to rest
+     */
     public void setRestPeriod(int periodLength){    this._resting = periodLength;    }
+
+    /**
+     * Decrement the time of resting
+     */
     public void decrementRest(){    this._resting--;}
+
+    /**
+     * Gets true or false depending if the ant has food
+     * @return true if the ant has food, false otherwise
+     */
     public boolean hasFood(){   return _hasFood;    }
+
+    /**
+     * set true if the ant has food, false otherwise
+     * @param hasFood true if the ant has food, false otherwise
+     */
     public void setHasFood(boolean hasFood) {   _hasFood = hasFood; }
+
+    /**
+     * Get the ant marker number
+     * @return the ant marker number
+     */
     public int getAntMarkerNum()
     {
         return _markerNum++ % 5;
     }
+
+    /**
+     * Get the ants direction
+     * @return the ants direction
+     */
     public Direction getAntDirection() {    return _antDirection;   }
 
+    /**
+     * Set the ants direction
+     * @param direction the ants direction
+     */
     public void setAntDirection(Direction direction) {
         this._antDirection = direction;
     }
+
+    /**
+     * Set the position of the ant.
+     * @param position ant position
+     */
     public void set_antPosition(Position position) { this._antPosition = position;}
 
 
