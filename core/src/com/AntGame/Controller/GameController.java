@@ -171,7 +171,7 @@ public class GameController {
         mapController.getMap().getRow(p.get_y()).getTile(p.get_x()).clearAnt();
     }
 
-    public void checkForSurroundedAntAt(Position p) {
+    public void checkForSurroundedAntAt(Position p) throws OutOfMapException {
         if (mapController.isAntAt(p)) {
             Ant a = mapController.getAntAt(p);
             if (adjacentAnts(p, antController.otherColour(a.getAntColour())) > 5) {
@@ -188,11 +188,11 @@ public class GameController {
         }
     }
 
-    public int adjacentAnts(Position p, Colour ac) {
+    public int adjacentAnts(Position p, Colour ac) throws OutOfMapException {
         int no = 0;
         for (int i = 0; i < 5; i++) {
             Position pos = adjacentCell(p, i);
-            if (mapController.antHillAt(pos) && antAt(pos).getColour() == ac) {
+            if (mapController.isAntAt(pos) && mapController.getAntAt(p).getAntColour() == ac) {
                 no++;
             }
         }
