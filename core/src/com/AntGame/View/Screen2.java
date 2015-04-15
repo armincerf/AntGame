@@ -91,7 +91,6 @@ public class Screen2 implements Screen {
     @Override
     public void render(float deltY) {
 
-
         Gdx.gl.glClearColor(200, 200, 200, 200); //sets bg colour
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clears all objects
         stage.act(); //update all actors
@@ -152,6 +151,7 @@ public class Screen2 implements Screen {
                 if (draw) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
                         drawCell(polySpriteRock, j, i);
+                        System.out.println("draw");
                     }
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
                         drawCell(polySpriteClear, j, i);
@@ -254,9 +254,14 @@ public class Screen2 implements Screen {
             gc = new GameController();
             gc.Initialize();
             gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
-            gc.getMapController().createMapFromFile(Splash.getWorld());
+            if (Splash.getWorld().equals("RANDOM")) {
+                gc.getMapController().createRandomMap();
+            } else {
+                gc.getMapController().createMapFromFile(Splash.getWorld());
+            }
             width = gc.getMapController().getWidth();
             height = gc.getMapController().getHeight();
+            System.out.println(width);
 
         } catch (IOException e) {
             e.printStackTrace();

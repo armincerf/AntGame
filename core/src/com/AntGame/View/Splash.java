@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import sun.applet.Main;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -24,10 +25,10 @@ import java.io.IOException;
  */
 public class Splash implements Screen {
     private Stage stage = new Stage();
-    private TextButton selectBrain1, selectBrain2, selectWorld, start, back;
+    private TextButton selectBrain1, selectBrain2, selectWorld, start, back, randomWorld;
     private Label brain1Label, brain2Label, worldLabel;
     private TextField setLimit;
-    private static String brainFile1 = "/Users/alexdavis/Documents/AntGame/core/assets/1.brain", brainFile2 = brainFile1, worldFile = "/Users/alexdavis/Documents/AntGame/core/assets/1.world";
+    private static String brainFile1 = "./core/assets/1.brain", brainFile2 = brainFile1, worldFile = "./core/assets/1.world";
     private Table table = new Table();
     final JFileChooser chooser = new JFileChooser();
     private boolean open = false;
@@ -61,12 +62,15 @@ public class Splash implements Screen {
         selectBrain1 = new TextButton("Select Brain for Player 1", MainMenu.skin);
         selectBrain2 = new TextButton("Select Brain for player2", MainMenu.skin);
         selectWorld = new TextButton("Select world file", MainMenu.skin);
+        randomWorld = new TextButton("Generate Random World", MainMenu.skin);
+
         start = new TextButton("Start", MainMenu.skin);
         back = new TextButton("Back", MainMenu.skin);
 
         brain1Label = new Label("Sample Brain", MainMenu.skin);
         brain2Label = new Label("Sample Brain", MainMenu.skin);
         worldLabel = new Label("Sample World", MainMenu.skin);
+
 
         setLimit = new TextField("Enter number of rounds: 100000", MainMenu.skin);
         setLimit.setMessageText("please");
@@ -90,8 +94,6 @@ public class Splash implements Screen {
         selectBrain2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-
                 System.out.println(1);
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
                         "BRAIN files", "brain");
@@ -104,7 +106,6 @@ public class Splash implements Screen {
                     checkBrain(brainFile2, reader, brain2Label);
                 }
                 System.out.println(3);
-
             }
         });
         start.addListener(new ClickListener() {
@@ -120,8 +121,6 @@ public class Splash implements Screen {
                     } else {
                         System.out.println(inttoconv);
                     }
-
-
                 }
 
             }
@@ -133,6 +132,14 @@ public class Splash implements Screen {
 
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 
+
+            }
+        });
+        randomWorld.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                worldLabel.setText("Random world generated");
+                worldFile = "RANDOM";
 
             }
         });
@@ -164,6 +171,8 @@ public class Splash implements Screen {
         table.add(start).size(150, 60).padBottom(20);
         table.add(back).size(150, 60).padBottom(20);
         table.add(setLimit).size(300, 60).padBottom(20);
+        table.row();
+        table.add(randomWorld).size(150, 60).padBottom(20);
 
 
         table.setFillParent(true);

@@ -49,7 +49,6 @@ public class AntControllerTest {
     @Test
     public void testFindAnt() throws Exception {
         assertEquals(ac.findAnt(a.getID()), p);
-
     }
 
     @Test

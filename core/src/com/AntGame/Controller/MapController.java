@@ -148,9 +148,9 @@ public class MapController {
 
     //TODO: ADD METHOD FOR CREATING RANDOM MAP
     public void createRandomMap() {
-
         _gameMap = new Map(150, 150);
-
+        width = 150;
+        height = 150;
         for(int i = 0;i < 150; i++){
             _gameMap.setRow(i, new MapRow(i, 150));
             for(int j = 0; j < 150; j++){

@@ -14,12 +14,12 @@ import java.util.Map;
  */
 public class testing {
     public static void main(String[] args) throws IOException {
-        TestStep();
+        testMap(new MapController());
     }
 
     public static void testMap(MapController mc) throws IOException {
 
-
+        mc.createRandomMap();
         for (int i = 0; i < mc.getMap().getHeight(); i++) {
             for (int j = 0; j < mc.getMap().getHeight(); j++) {
                 //for testing

@@ -8,7 +8,7 @@ turn right 0
 move 0 3
 sense ahead 9 11 home
 move 10 8
-drop 10
+drop 11
 flip 3 12 13
 turn left 8
 flip 2 14 15
