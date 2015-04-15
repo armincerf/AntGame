@@ -1,6 +1,13 @@
 package com.AntGame.View;
 
 import com.AntGame.Controller.AntBrainReader;
+import com.AntGame.Controller.GameController;
+import com.AntGame.Controller.OutOfMapException;
+import com.AntGame.Model.Ant;
+import com.AntGame.Model.Helper.Colour;
+import com.AntGame.Model.Helper.Direction;
+import com.AntGame.Model.Helper.Position;
+import com.AntGame.Model.TileType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -17,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by alexdavis on 12/04/15.
@@ -25,15 +34,20 @@ import java.io.IOException;
 public class Tournament implements Screen {
 
     private Stage stage = new Stage();
-    private TextButton selectBrain, selectBrain2, selectWorld, start, back;
-    private Label brain1Label, brain2Label, worldLabel;
+    private TextButton selectBrain, selectWorld, start, back;
+    private Label brain1Label, worldLabel;
     private static String brainFile1 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", brainFile2 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", worldFile = "/Users/alexdavis/Downloads/test/core/assets/1.world";
     private Table table = new Table();
     private TextField input;
     private int players;
+    Skin winSkin;
+    private int currentPlayer = 0;
+    private ArrayList<String> brainList;
+    private int blackScore, redScore;
 
     public Tournament(int players) {
         this.players = players;
+        brainList = new ArrayList<>();
         System.out.println(players);
     }
 
@@ -53,8 +67,200 @@ public class Tournament implements Screen {
 
     @Override
     public void show() {
+        createSkin();
+
+        final AntBrainReader reader = new AntBrainReader();
+        final JFileChooser chooser = new JFileChooser();
+
+        MainMenu.createBasicSkin();
+        selectBrain = new TextButton("Select Brain for Player " + currentPlayer, MainMenu.skin);
+        selectWorld = new TextButton("Select world file", MainMenu.skin);
+        start = new TextButton("Next", MainMenu.skin);
+        back = new TextButton("Back", MainMenu.skin);
+
+        input = new TextField("1", winSkin);
+
+
+        brain1Label = new Label("No brain selected", MainMenu.skin);
+        worldLabel = new Label("No world selected", MainMenu.skin);
+
+
+        selectBrain.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                        "BRAIN files", "brain");
+                chooser.setFileFilter(filter);
+                int returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    brain1Label.setText("Chosen world = " + chooser.getSelectedFile().getName());
+                    brainFile1 = chooser.getSelectedFile().getAbsolutePath();
+                    checkBrain(brainFile1, "Brain 1", reader, chooser, brain1Label);
+                }
+
+            }
+        });
+
+        selectWorld.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                FileNameExtensionFilter worldFilter = new FileNameExtensionFilter(
+                        "WORLD files", "world");
+                chooser.setFileFilter(worldFilter);
+                int returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    worldLabel.setText("World = " + chooser.getSelectedFile().getName());
+                    worldFile = chooser.getSelectedFile().getAbsolutePath();
+                }
+
+
+            }
+        });
+
+
+        start.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (players == currentPlayer) {
+                    start.setText("Start");
+
+
+                    if (brainFile1 == null) {
+                        brain1Label.setText("Please choose a brain file first!!");
+                    } else {
+
+                        try {
+                            runTourney(brainList);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    if (brainFile1 != null) {
+                        brainList.add(brainFile1);
+                        System.out.println(brainList.size() + " brains added");
+
+                        brain1Label.setText("Add another brain");
+                        currentPlayer++;
+                        if (players == currentPlayer) {
+                            start.setText("Start");
+                        }
+                    } else {
+                        brain1Label.setText("Please choose a brain file first!!");
+
+                    }
+                }
+
+                }
+        });
+
+
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+
+
+            }
+        });
+
+
+
+        table.add(selectBrain).size(180, 60).padBottom(20).padRight(20);
+        table.add(selectWorld).size(180, 60).padBottom(20).padRight(20);
+
+        table.add(brain1Label).size(230, 40).padBottom(20).padRight(20);
+        table.add(worldLabel).size(230, 40).padBottom(20).padRight(20);
+
+        table.row();
+        table.add(start).size(150, 60).padBottom(20);
+        table.add(back).size(150, 60).padBottom(20);
+        table.add(input).size(200, 60).padBottom(20);
+
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        Gdx.input.setInputProcessor(stage);
+
+
+    }
+
+    private void runTourney(ArrayList<String> brainList) throws IOException {
+
+        int[] scores = new int[players];
+        for (int i = 0; i < players; i++) {
+            for (int j = 0; j < players; j++) {
+                if (i == j) {
+                    break;
+                }
+                System.out.println("player " + i + " vs player " + j + brainList.get(i));
+                GameController gc = new GameController();
+
+                gc.Initialize();
+                gc.setAntInstructions(brainList.get(i), brainList.get(j));
+                gc.getMapController().createMapFromFile(worldFile);
+                addAnts(gc);
+                Map map = gc.getAntController().getMap();
+                System.out.println(map.toString());
+
+                for (int k = 0; k < 100000; k++) {
+                    for (Object a : map.values()) {
+                        Ant ant = (Ant) a;
+                        try {
+                            gc.step(ant.getID());
+                            if (k % 10000 == 0) {
+                                System.out.println(k);
+                            }
+                        } catch (OutOfMapException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                blackScore = gc.getScore(Colour.Black);
+                redScore = gc.getScore(Colour.Red);
+                System.out.println("moves = " + gc.getMoves());
+                System.out.println("black score = " + blackScore + " red score = " + redScore);
+
+
+            }
+        }
+
+
+    }
+
+    private void addAnts(GameController gc) {
+        for (int i = 0; i < 150; i++) {
+            for (int j = 0; j < 150; j++) {
+
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+                    if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
+                        try {
+                            Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Right);
+                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                            gc.getAntController().addAnt(a);
+                        } catch (OutOfMapException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Red)) {
+                        try {
+                            Ant a = new Ant(new Position(j, i), Colour.Red, Direction.Right);
+                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                            gc.getAntController().addAnt(a);
+                        } catch (OutOfMapException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void createSkin() {
         BitmapFont font = new BitmapFont();
-        Skin winSkin = new Skin();
+        winSkin = new Skin();
         winSkin.add("default", font);
 
         //Create texture
@@ -88,113 +294,6 @@ public class Tournament implements Screen {
         winSkin.add("default", labelStyle);
         winSkin.add("dialog", textButtonStyle);
         winSkin.add("default", textFieldStyle);
-
-        final AntBrainReader reader = new AntBrainReader();
-        final JFileChooser chooser = new JFileChooser();
-
-        MainMenu.createBasicSkin();
-        selectBrain = new TextButton("Select Brain for Player 1", MainMenu.skin);
-        selectBrain2 = new TextButton("Select Brain for player2", MainMenu.skin);
-        selectWorld = new TextButton("Select world file", MainMenu.skin);
-        start = new TextButton("Start", MainMenu.skin);
-        back = new TextButton("Back", MainMenu.skin);
-
-        input = new TextField("1", winSkin);
-
-
-        brain1Label = new Label("No brain selected", MainMenu.skin);
-        brain2Label = new Label("No brain selected", MainMenu.skin);
-        worldLabel = new Label("No world selected", MainMenu.skin);
-
-
-        selectBrain.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                        "BRAIN files", "brain");
-                chooser.setFileFilter(filter);
-                int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    brain1Label.setText("Chosen world = " + chooser.getSelectedFile().getName());
-                    brainFile1 = chooser.getSelectedFile().getAbsolutePath();
-                    checkBrain(brainFile1, "Brain 1", reader, chooser, brain1Label);
-                }
-
-            }
-        });
-        selectBrain2.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                        "BRAIN files", "brain");
-                chooser.setFileFilter(filter);
-                int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    brain2Label.setText("Brain 2 = " + chooser.getSelectedFile().getName());
-                    brainFile2 = chooser.getSelectedFile().getAbsolutePath();
-                    checkBrain(brainFile2, "Brain 2", reader, chooser, brain2Label);
-                }
-
-
-            }
-        });
-        start.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (brainFile1 == null) {
-                    brain1Label.setText("Please choose a world file first!!");
-                } else {
-
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new Screen2());
-                }
-
-            }
-        });
-        back.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
-
-
-            }
-        });
-        selectWorld.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                FileNameExtensionFilter worldFilter = new FileNameExtensionFilter(
-                        "WORLD files", "world");
-                chooser.setFileFilter(worldFilter);
-                int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    worldLabel.setText("World = " + chooser.getSelectedFile().getName());
-                    worldFile = chooser.getSelectedFile().getAbsolutePath();
-                }
-
-
-            }
-        });
-
-
-        table.add(selectBrain).size(180, 60).padBottom(20).padRight(20);
-        table.add(selectWorld).size(180, 60).padBottom(20).padRight(20);
-
-        table.add(brain1Label).size(230, 40).padBottom(20).padRight(20);
-        table.add(worldLabel).size(230, 40).padBottom(20).padRight(20);
-
-        table.add(brain2Label).size(200, 40).padBottom(20).row();
-        table.row();
-        table.add(start).size(150, 60).padBottom(20);
-        table.add(back).size(150, 60).padBottom(20);
-        table.add(input).size(200, 60).padBottom(20);
-
-        table.setFillParent(true);
-        stage.addActor(table);
-
-        Gdx.input.setInputProcessor(stage);
-
-
     }
 
     public void checkBrain(String brainFile, String brain, AntBrainReader reader, JFileChooser chooser, Label label) {

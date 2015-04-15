@@ -382,7 +382,6 @@ public class AntBrainReader {
     public static Instruction buildInstruction(String line)
     {
         String[] wordList = line.toLowerCase().split("\\s");
-        System.out.println(line);
         Instruction newInstr = new Instruction();
 
         switch(wordList[0]){
