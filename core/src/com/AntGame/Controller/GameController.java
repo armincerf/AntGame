@@ -22,6 +22,7 @@ public class GameController {
     private int moves;
     private Random rand = new Random();
     private int blackScore, redScore, count;
+    private int killed;
 
 
     public GameController() throws IOException {
@@ -39,6 +40,7 @@ public class GameController {
         moves = 0;
         blackScore = 0;
         redScore = 0;
+        killed = 0;
     }
 
     /**
@@ -81,6 +83,8 @@ public class GameController {
             return redAntInstructions.get(state);
 
         }
+
+
     }
 
     /**
@@ -157,6 +161,10 @@ public class GameController {
         return redScore;
     }
 
+    public int getKilled() {
+        return killed;
+    }
+
     public int getMoves() {
         return moves;
     }
@@ -178,82 +186,48 @@ public class GameController {
     }
 
     public void killAntAt(Position p) {
-        mapController.getMap().getRow(p.get_y()).getTile(p.get_x()).clearAnt();
+        killed++;
+        mapController.clearAntAt(p);
+
     }
 
     public void checkForSurroundedAntAt(Position p) throws OutOfMapException {
         if (mapController.isAntAt(p)) {
             Ant a = mapController.getAntAt(p);
-            if (adjacentAnts(p, antController.otherColour(a.getAntColour())) > 5) {
+            if (adjacentAnts(p, a.getAntColour()) > 4) {
+                System.out.println("ANT DOWN!!!" + a.getAntColour());
                 killAntAt(p);
                 mapController.setFoodAt(p, mapController.foodAt(p) + 3 + (a.hasFood() ? 1 : 0));
             }
         }
     }
 
-    public void checkForSurroundedAnts(Position p) throws OutOfMapException {
-        checkForSurroundedAntAt(p);
-        for (int i = 0; i < 5; i++) {
-            checkForSurroundedAntAt(SenseDirection.adjacent_cell(p, Direction.fromInt(i)));
-        }
-    }
+
 
     public int adjacentAnts(Position p, Colour ac) throws OutOfMapException {
         int no = 0;
-        for (int i = 0; i < 5; i++) {
-            Position pos = adjacentCell(p, i);
-            if (mapController.isAntAt(pos) && mapController.getAntAt(p).getAntColour() == ac) {
+        for (int i = 0; i < 6; i++) {
+            Position pos = SenseDirection.adjacent_cell(p, Direction.fromInt(i));
+
+            if (mapController.isAntAt(pos) && mapController.getAntAt(pos).getAntColour().equals(antController.otherColour(ac))) {
                 no++;
+                System.out.println(no);
             }
         }
         return no;
     }
 
-    public Position adjacentCell(Position p, int d) throws OutOfMapException {
+    public void manualMove(Ant a, Position p) throws OutOfMapException {
+        System.out.println("move" + p.toString() + a.getID());
+        Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
 
-        Position position = new Position(0, 0); // init
-
-        switch (d) {
-            case 0:
-                position = new Position(p.get_x() + 1, p.get_y();
-                break;
-
-            case 1:
-                if (p.get_y() % 2 == 0) {
-                    position = new Position(p.get_x(), p.get_y() + 1);
-                } else {
-                    position = new Position(p.get_x() + 1, p.get_y() + 1);
-                }
-                break;
-            case 2:
-                if (p.get_y() % 2 == 0) {
-                    position = new Position(p.get_x() - 1, p.get_y() + 1);
-                } else {
-                    position = new Position(p.get_x(), p.get_y() + 1);
-                }
-                break;
-
-            case 3:
-                position = new Position(p.get_x() - 1, p.get_y());
-                break;
-
-            case 4:
-                if (p.get_y() % 2 == 0) {
-                    position = new Position(p.get_x() - 1, p.get_y() - 1);
-                } else {
-                    position = new Position(p.get_x(), p.get_y() - 1);
-                }
-                break;
-
-            case 5:
-                if (p.get_y() % 2 == 0) {
-                    position = new Position(p.get_x(), p.get_y() - 1);
-                } else {
-                    position = new Position(p.get_x() + 1, p.get_y() - 1);
-                }
-                break;
+        System.out.println(newPos);
+        if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky || mapController.isAntAt(newPos)) {
+            System.out.println("blocked");
+        } else {
+            mapController.clearAntAt(p);
+            mapController.setAntAt(newPos, a);
         }
-        return position;
     }
     /**
      * This determines the action a specific ant is to take on the next turn
@@ -261,11 +235,10 @@ public class GameController {
      * @throws OutOfMapException thrown if an ant exceeds the maps bounds
      */
     public void step(int id) throws OutOfMapException {
-
         moves++;
-
         if (antController.antIsAlive(id)) {
             Position p = antController.findAnt(id);
+            checkForSurroundedAntAt(p);
             Ant a = antController.getAnt(id);
             if (a.getResting() > 0) {
                 a.decrementRest();
@@ -323,10 +296,10 @@ public class GameController {
                         a.setBrainState(instr.state1);
                         break;
                     case Move:
-                        //System.out.println("move");
+                        System.out.println("move" + p.toString() + a.getID());
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
-
-                        if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky) {
+                        System.out.println(newPos);
+                        if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky || mapController.isAntAt(newPos)) {
                             a.setBrainState(instr.state2);
                         } else {
                             mapController.clearAntAt(p);

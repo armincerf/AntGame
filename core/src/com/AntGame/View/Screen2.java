@@ -103,7 +103,7 @@ public class Screen2 implements Screen {
                     System.out.println("Chosen: " + object);
                 }
             }.text("Game Over!").show(stage);
-            TextButton dbutton = new TextButton("Game Over - Click to go back\n Final score: \n" + redScore.getText() + "\n" + blackScore.getText(), MainMenu.skin, "dialog");
+            TextButton dbutton = new TextButton("Game Over - Click to go back\n Final score: \n" + redScore.getText() + "\n" + blackScore.getText() + "\nkilled = " + gc.getKilled(), MainMenu.skin, "dialog");
             dialog.button(dbutton, true);
             dbutton.addListener(new ClickListener() {
 
@@ -151,7 +151,6 @@ public class Screen2 implements Screen {
                 if (draw) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
                         drawCell(polySpriteRock, j, i);
-                        System.out.println("draw");
                     }
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
                         drawCell(polySpriteClear, j, i);
@@ -251,6 +250,7 @@ public class Screen2 implements Screen {
         //ad ants to ant hill
         moves = 0;
         try {
+            System.out.println(Splash.getBrainFile1() + Splash.getBrainFile2());
             gc = new GameController();
             gc.Initialize();
             gc.setAntInstructions(Splash.getBrainFile1(), Splash.getBrainFile2());
@@ -329,6 +329,13 @@ public class Screen2 implements Screen {
         stage.addActor(table);
         boolean aa = false;
         boolean b = false;
+        //addtestAnt();
+        addAnts();
+        Gdx.input.setInputProcessor(stage);
+
+    }
+
+    private void addAnts() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
 
@@ -338,6 +345,7 @@ public class Screen2 implements Screen {
                             Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Right);
                             gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
                             gc.getAntController().addAnt(a);
+
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }
@@ -354,8 +362,30 @@ public class Screen2 implements Screen {
                 }
             }
         }
-        Gdx.input.setInputProcessor(stage);
+    }
 
+    private void addtestAnt() {
+
+        try {
+            addAnt(new Position(4, 2), Colour.Red, Direction.Right);
+
+            addAnt(new Position(2, 2), Colour.Black, Direction.Right);
+            addAnt(new Position(3, 3), Colour.Black, Direction.Right);
+            addAnt(new Position(3, 1), Colour.Black, Direction.Right);
+            addAnt(new Position(4, 1), Colour.Black, Direction.Right);
+
+            addAnt(new Position(4, 3), Colour.Black, Direction.Right);
+
+
+        } catch (OutOfMapException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addAnt(Position p, Colour c, Direction d) {
+        Ant b = new Ant(p, c, d);
+        gc.getMapController().getMap().getRow(p.get_y()).getTile(p.get_x()).putAntOnTile(b);
+        gc.getAntController().addAnt(b);
     }
 
     public static double DegreesToRadians(double degrees) {
