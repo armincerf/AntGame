@@ -123,7 +123,7 @@ public class MapController {
             }
 
             if (amountOfRocky != 610 || amountOfRedAntHills != 127 || amountOfBlackAntHills != 127 || amountOfFood != 275) {
-                System.out.println(blank); //TODO if this is called the user should be asked to add a different world
+                System.out.println("errer"); //TODO if this is called the user should be asked to add a different world
 
             }
 
@@ -194,7 +194,6 @@ public class MapController {
                 randR2 = random.nextInt(150);
 
                 okRedHillSpace = checkHillSpace(randR1, randR2);
-                System.out.println(okRedHillSpace);
             }
 
             int xR = randR1;
@@ -216,7 +215,6 @@ public class MapController {
 
             int xB = randB1;
             int yB = randB2;
-        System.out.println("xb yb = " + xB + yB);
         for (Position pos : createHill(xB, yB)) {
             _gameMap.getRow(pos.get_y()).getTile(pos.get_x()).set_antHill(Colour.Black);
             }
@@ -354,7 +352,6 @@ public class MapController {
 
 
     public boolean checkHillSpace(int x, int y) {
-        System.out.println("x = " + x + " y = " + y);
         return !(x < 7 || x > 142 || y < 7 || y > 142);
     }
 

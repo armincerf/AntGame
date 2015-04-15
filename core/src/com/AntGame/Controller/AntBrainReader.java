@@ -68,7 +68,6 @@ public class AntBrainReader {
 
         Matcher m = r.matcher(line);
         boolean matches = m.matches();
-        System.out.println(line);
         if (!matches) {
             System.out.println("parse failed");
                 correct = false;

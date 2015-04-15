@@ -30,7 +30,7 @@ public enum SenseDirection {
             case 4:
                 return  p.get_y() % 2 == 1 ? new Position(p.get_x() - 1, p.get_y() - 1) : new Position(p.get_x(), p.get_y() - 1);
             case 5:
-                return  p.get_y() % 2 == 1 ? new Position(p.get_x(), p.get_y() - 1) : new Position(p.get_x() + 1, p.get_y() - 1);
+                return p.get_y() % 2 == 1 ? new Position(p.get_x() + 1, p.get_y() - 1) : new Position(p.get_x() + 1, p.get_y() - 1);
             default:
                 return p;
         }

@@ -210,20 +210,17 @@ public class GameController {
             Position pos = SenseDirection.adjacent_cell(p, Direction.fromInt(i));
 
             if (mapController.isAntAt(pos) && mapController.getAntAt(pos).getAntColour().equals(antController.otherColour(ac))) {
+                System.out.println(mapController.getAntAt(pos).getAntPositon().toString());
                 no++;
-                System.out.println(no);
             }
         }
         return no;
     }
 
     public void manualMove(Ant a, Position p) throws OutOfMapException {
-        System.out.println("move" + p.toString() + a.getID());
         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
 
-        System.out.println(newPos);
         if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky || mapController.isAntAt(newPos)) {
-            System.out.println("blocked");
         } else {
             mapController.clearAntAt(p);
             mapController.setAntAt(newPos, a);
@@ -281,7 +278,6 @@ public class GameController {
                         if (a.hasFood()) {
                             if (mapController.antHillAt(Colour.Black, p)) {
                                 blackScore++;
-                                System.out.println(blackScore);
                             }
                             if (mapController.antHillAt(Colour.Red, p)) {
                                 redScore++;
@@ -296,9 +292,7 @@ public class GameController {
                         a.setBrainState(instr.state1);
                         break;
                     case Move:
-                        System.out.println("move" + p.toString() + a.getID());
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
-                        System.out.println(newPos);
                         if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky || mapController.isAntAt(newPos)) {
                             a.setBrainState(instr.state2);
                         } else {

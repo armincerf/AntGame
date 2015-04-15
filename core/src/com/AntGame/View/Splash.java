@@ -28,7 +28,7 @@ public class Splash implements Screen {
     private TextButton selectBrain1, selectBrain2, selectWorld, start, back, randomWorld;
     private Label brain1Label, brain2Label, worldLabel;
     private TextField setLimit;
-    private static String brainFile2 = "./core/assets/testBrain.brain", brainFile1 = "./core/assets/testBrain.brain", worldFile = "./core/assets/1.world";
+    private static String brainFile2 = "./core/assets/1.brain", brainFile1 = "./core/assets/testBrain.brain", worldFile = "./core/assets/1.world";
     private Table table = new Table();
     final JFileChooser chooser = new JFileChooser();
     private boolean open = false;

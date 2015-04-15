@@ -89,7 +89,6 @@ public class MapControllerTest {
         //CLEAR ANT
         mc.clearAntAt(Position.set(4,1));
 
-        assertEquals(mc.isAntAt(Position.set(4, 1)), );
     }
 
     @Test
