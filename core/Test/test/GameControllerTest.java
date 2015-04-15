@@ -21,6 +21,7 @@ public class GameControllerTest {
     MapController mc;
     AntController ac;
 
+
     @Before
     public void SetUp()
     {
@@ -34,10 +35,10 @@ public class GameControllerTest {
         mc = gc.getMapController();
         ac = gc.getAntController();
 
-        String brain = "C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\brain1.brain";
+        String brain = "assets/brain1.brain";
         gc.setAntInstructions(brain, brain);
         try {
-            mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+            mc.createMapFromFile("assets/tiny.world");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -148,6 +149,59 @@ public class GameControllerTest {
 
         // Check if step method worked by if moves have increased
         assertEquals(gc.getMoves(), curmoves + 1);
+
+    }
+
+    @Test
+    public void testKillAntAt() throws Exception {
+        Position p = new Position(2, 2);
+        Ant a = new Ant(p, Colour.Red, Direction.Right);
+        mc.setAntAt(p, a);
+        assertTrue(mc.isAntAt(p));
+
+        gc.killAntAt(p);
+        assertFalse(mc.isAntAt(p));
+
+    }
+
+    @Test
+    public void testCheckForSurroundedAntAt() throws Exception {
+        Position p = new Position(2, 2);
+        Ant a = new Ant(p, Colour.Red, Direction.Right);
+        Ant b = new Ant(new Position(2, 3), Colour.Black, Direction.Right);
+        Ant c = new Ant(new Position(2, 1), Colour.Black, Direction.Right);
+        Ant d = new Ant(new Position(3, 2), Colour.Black, Direction.Right);
+        Ant e = new Ant(new Position(1, 2), Colour.Black, Direction.Right);
+        Ant f = new Ant(new Position(1, 3), Colour.Black, Direction.Right);
+        mc.setAntAt(p, a);
+        mc.setAntAt(new Position(2, 3), b);
+        mc.setAntAt(new Position(2, 1), c);
+        mc.setAntAt(new Position(3, 2), d);
+        mc.setAntAt(new Position(1, 2), e);
+        mc.setAntAt(new Position(1, 3), f);
+
+        assertTrue(mc.isAntAt(p));
+    }
+
+    @Test
+    public void testAdjacentAnts() throws Exception {
+        Position p = new Position(2, 2);
+        Ant a = new Ant(p, Colour.Red, Direction.Right);
+        Ant b = new Ant(new Position(2, 3), Colour.Black, Direction.Right);
+        Ant c = new Ant(new Position(2, 1), Colour.Black, Direction.Right);
+        Ant d = new Ant(new Position(3, 2), Colour.Black, Direction.Right);
+        Ant e = new Ant(new Position(1, 2), Colour.Black, Direction.Right);
+        Ant f = new Ant(new Position(1, 3), Colour.Black, Direction.Right);
+        mc.setAntAt(p, a);
+        mc.setAntAt(new Position(2, 3), b);
+        mc.setAntAt(new Position(2, 1), c);
+        mc.setAntAt(new Position(3, 2), d);
+        mc.setAntAt(new Position(1, 2), e);
+        mc.setAntAt(new Position(1, 3), f);
+
+
+        assertEquals(gc.adjacentAnts(p, Colour.Red), 4);
+
 
     }
 }
