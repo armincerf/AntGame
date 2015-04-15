@@ -15,6 +15,13 @@ public class AntBrainReader {
 
     private static boolean correct = false;
 
+    /**
+     * Reads in a file and returns a list of instructions
+     *
+     * @param filename file to be read
+     * @return instruction list
+     * @throws IOException
+     */
     public static List<Instruction> readBrainFile(String filename) throws IOException
     {
         BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -36,10 +43,20 @@ public class AntBrainReader {
         return instrTypeList;
     }
 
+    /**
+     * checks the ant brain is correct or not
+     * call the method to get results
+     * @return correct as a boolean value
+     */
     public boolean getCorrect() {
         return correct;
     }
 
+    /**
+     * checks the syntax of the ant brain and searches for the special commands in the game
+     * @param line in lower cases
+     * @return correct as a boolean value, else the error message
+     */
     public static void checkSyntax(String line) {
         line = line.toLowerCase();
         correct = true;
@@ -349,6 +366,12 @@ public class AntBrainReader {
     }
 
     //Most hacky parser ever,  10/10 - IGN
+
+    /**
+     * takes the checkSyntax output and constructs a instruction list for the brain
+     * @param line as checked output from checkSyntax and being added to the word list
+     * @return newInstr Instruction list with parsed instruction commands, else return the error message
+     */
     public static Instruction buildInstruction(String line)
     {
         String[] wordList = line.toLowerCase().split("\\s");

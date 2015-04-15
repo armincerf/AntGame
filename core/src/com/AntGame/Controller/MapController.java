@@ -23,9 +23,6 @@ public class MapController {
 
     private Map _gameMap;
 
-    //UPDATE: ANT HILL MULTIMAP REMOVED - NEW PARAMETER IN TILE.JAVA which is NULL
-    //IF NOT ant hill, COLOUR OF ANT HILL IF ANT HILL
-
     public Map getMap() {   return _gameMap;    }
 
 
