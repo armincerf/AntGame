@@ -40,7 +40,7 @@ public class Tournament implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1); //sets clear color to black
+        Gdx.gl.glClearColor(0, 0, 10, 1); //sets clear color to blue
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); //clear the batch
         stage.act(); //update all actors
         stage.draw(); //draw all actors on the Stage.getBatch()
