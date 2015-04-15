@@ -1,5 +1,8 @@
 package com.AntGame.Model.Helper;
 
+/**
+ * Enum of directions
+ */
 public enum Direction {
     Right(0),
     DownRight(1),
@@ -8,6 +11,9 @@ public enum Direction {
     UpLeft(4),
     UpRight(5);
 
+    /**
+     * Direction Number
+     */
     private int _intDirection;
 
     Direction(int dir)
@@ -15,16 +21,30 @@ public enum Direction {
         this._intDirection = dir;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getEnumeratedDirection()
     {
         return _intDirection;
     }
 
+    /**
+     *
+     * @param lr
+     * @return
+     */
     public int turn(Left_or_Right lr)
     {
         return lr == Left_or_Right.left ? (_intDirection + 5) % 6 : (_intDirection + 1) % 6;
     }
 
+    /**
+     *
+     * @param x
+     * @return
+     */
     public static Direction fromInt(int x)
     {
         switch(x){

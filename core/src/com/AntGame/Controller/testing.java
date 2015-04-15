@@ -24,7 +24,7 @@ public class testing {
             for (int j = 0; j < mc.getMap().getHeight(); j++) {
                 //for testing
 
-                if (mc.getMap().getRow(j).getTile(i).hasAnt()) {
+                if (mc.getMap().getRow(j).getTile(i).hasAliveAnt()) {
                     if (mc.getMap().getRow(j).getTile(i).getFood() != 0) {
                         System.out.print("AF");
                     } else {

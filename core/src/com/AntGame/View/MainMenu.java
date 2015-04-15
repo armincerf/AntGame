@@ -31,6 +31,11 @@ public class MainMenu implements Screen {
     private TextButton buttonPlay, buttonTourney,
             buttonExit ;
 
+    /**
+     * Renders the screen.
+     * Clears all objects on the screen and redraws.
+     * @param delta The time since the last refresh
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 10, 1);
@@ -39,9 +44,18 @@ public class MainMenu implements Screen {
         stage.draw();
     }
 
+    /**
+     * Resize the screen
+     * @param width Width of the pane
+     * @param height Height of the pane
+     */
     @Override
     public void resize(int width, int height) {
     }
+
+    /**
+     * Create a basic background
+     */
     public static void createBasicSkin(){
 
         //Create  font
@@ -88,6 +102,9 @@ public class MainMenu implements Screen {
 
     }
 
+    /**
+     * Initialises GUI
+     */
     @Override
     public void show() {
         final JFileChooser chooser = new JFileChooser();
@@ -99,6 +116,13 @@ public class MainMenu implements Screen {
         buttonExit = new TextButton("Exit", skin);
         buttonTourney = new TextButton("Start Tournement", skin);
         buttonPlay.addListener(new ClickListener(){
+
+            /**
+             * Action listener for the play button
+             * @param event an event
+             * @param x mouse position x
+             * @param y mouse position y
+             */
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //Same way we moved here from the Splash Screen
@@ -110,6 +134,13 @@ public class MainMenu implements Screen {
             }
         });
         buttonExit.addListener(new ClickListener(){
+
+            /**
+             * Action listener for the play button
+             * @param event an event
+             * @param x mouse position x
+             * @param y mouse position y
+             */
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -117,6 +148,13 @@ public class MainMenu implements Screen {
             }
         });
         buttonTourney.addListener(new ClickListener() {
+
+            /**
+             * Action listener for the play button
+             * @param event an event
+             * @param x mouse position x
+             * @param y mouse position y
+             */
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
@@ -139,19 +177,31 @@ public class MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+    /**
+     * Dispose of the GUI
+     */
     @Override
     public void hide() {
         dispose();
     }
 
+    /**
+     * Pause the GUI
+     */
     @Override
     public void pause() {
     }
 
+    /**
+     * Resume the GUI
+     */
     @Override
     public void resume() {
     }
 
+    /**
+     * Dispose of the stage and skin.
+     */
     @Override
     public void dispose() {
         stage.dispose();

@@ -31,7 +31,7 @@ public class TournamentPlayerNumberPicker implements Screen {
     public void show() {
         MainMenu.createBasicSkin();
         BitmapFont font = new BitmapFont();
-        Skin winSkin = new Skin();
+        final Skin winSkin = new Skin();
         winSkin.add("default", font);
 
         //Create texture

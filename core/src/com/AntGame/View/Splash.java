@@ -24,7 +24,7 @@ public class Splash implements Screen {
     private Stage stage = new Stage();
     private TextButton selectBrain1, selectBrain2, selectWorld, start, back;
     private Label brain1Label, brain2Label, worldLabel;
-    private static String brainFile1 = "/Users/alexdavis/Documents/AntGame/core/assets/1.brain", brainFile2 = "/Users/alexdavis/Documents/AntGame/core/assets/2.brain", worldFile = "/Users/alexdavis/Downloads/test/core/assets/1.world";
+    private static String brainFile1 = "/Users/Siren/AntGame/core/assets/brain1.brain", brainFile2 = "/Users/Siren/AntGame/core/assets/brain1.brain", worldFile = "/Users/Siren/AntGame/core/assets/1.world";
     private Table table = new Table();
     final JFileChooser chooser = new JFileChooser();
     private boolean open = false;
