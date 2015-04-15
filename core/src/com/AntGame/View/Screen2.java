@@ -11,9 +11,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -94,7 +98,31 @@ public class Screen2 implements Screen {
         stage.act(); //update all actors
         blackScore.setText("Black Score = " + gc.getScore(Colour.Black));
         redScore.setText("Red Score = " + gc.getScore(Colour.Red));
+        if (Splash.getRounds() < moves) {
+            run = false;
+            Dialog dialog = new Dialog("", MainMenu.skin, "dialog") {
+                protected void result(Object object) {
+                    System.out.println("Chosen: " + object);
+                }
+            }.text("Game Over!").show(stage);
+            TextButton dbutton = new TextButton("Game Over - Click to go back", MainMenu.skin, "dialog");
+            dialog.button(dbutton, true);
+            dbutton.addListener(new ClickListener() {
 
+                /**
+                 * Action listener for the play button
+                 *
+                 * @param event an event
+                 * @param x     mouse position x
+                 * @param y     mouse position y
+                 */
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+
+                }
+            });
+        }
         //draw all actors on the Stage.getBatch()
         Map map = gc.getAntController().getMap();
         if(run) {
@@ -112,6 +140,11 @@ public class Screen2 implements Screen {
 
 
             }
+            moves += 1*speed;
+            if(moves%500 == 0) {
+                System.out.println(moves+ " moves");
+            }
+
         }
         polygonSpriteBatch.begin();
         for (int j = 0; j < width; j++) {
@@ -135,6 +168,7 @@ public class Screen2 implements Screen {
 
                     try {
                         if (gc.getMapController().isAntAt(new Position(j, i))) {
+
                             if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().hasFood()) {
                                 if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
                                     drawCell(polySpriteRHill, j, i);
@@ -144,27 +178,44 @@ public class Screen2 implements Screen {
                             } else {
                                 if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
                                     drawCell(polySpriteBlackAnt, j, i);
-                                    antX = i;
-                                    antY = j;
+
                                 } else {
                                     drawCell(polySpriteRedAnt, j, i);
                                 }
                             }
+                            if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
+                                float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
+                                scale = (scale / 100) * 4;
+                                scale = (float) (scale + 0.6);
+                                drawCell(polySpriteClear, j, i);
+                                drawCell(polySpriteFood, j, i, scale);
+
+                            }
 
                         } else if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
+
                             if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
                                 drawCell(polySpriteBHill, j, i);
                             } else {
                                 drawCell(polySpriteRHill, j, i);
                             }
+                            if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
+                                float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
+                                scale = (scale / 100) * 4;
+                                scale = (float) (scale + 0.6);
+                                drawCell(polySpriteClear, j, i);
+                                drawCell(polySpriteFood, j, i, scale);
+
                             }
+                        }
+
                     } catch (OutOfMapException e) {
                         e.printStackTrace();
                         }
-                    }
-
                 }
+
             }
+        }
 
         polygonSpriteBatch.end();
 
@@ -172,6 +223,10 @@ public class Screen2 implements Screen {
 
 
         stage.draw();
+    }
+
+    private void showEndPop() {
+
     }
 
 
@@ -234,7 +289,7 @@ public class Screen2 implements Screen {
                 if (speed > 1) {
                     speed--;
                 }
-                System.out.println(speed);
+                System.out.println(speed+"Speed");
             }
         });
         back = new TextButton("Back", MainMenu.skin);

@@ -185,33 +185,39 @@ public class GameController {
                 Instruction instr = get_instruction(a.getAntColour(), a.getBrainState());
                 switch (instr.instrType) {
                     case Sense:
-                        System.out.println("sense");
+                        //System.out.println("sense");
                         Position p2 = SenseDirection.sensed_cell(p, a.getAntDirection(), instr.senseDirection);
                         int s1 = CellMatches(p2, instr.condition, a.getAntColour()) ? instr.state1 : instr.state2;
                         a.setBrainState(s1);
                         break;
                     case Mark:
-                        System.out.println("mark");
+                        System.out.println("mark" + instr.state1);
                         mapController.setMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
                             a.setBrainState(instr.state1);
                         break;
                     case Unmark:
-                        System.out.println("unmark");
+                        //System.out.println("unmark");
                         mapController.clearMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
                         a.setBrainState(instr.state1);
                         break;
                     case Pickup:
-                        System.out.println("pickup");
+                        // System.out.println("pickup");
                         if (a.hasFood() || mapController.foodAt(p) == 0)
                             a.setBrainState(instr.state2);
                         else {
+                            if (mapController.antHillAt(Colour.Black, p)) {
+                                blackScore--;
+                            }
+                            if (mapController.antHillAt(Colour.Red, p)) {
+                                redScore--;
+                            }
                             mapController.setFoodAt(p, mapController.foodAt(p) - 1);
                             a.setHasFood(true);
                             a.setBrainState(instr.state1);
                         }
                         break;
                     case Drop:
-                        System.out.println("drop");
+                        // System.out.println("drop");
                         if (a.hasFood()) {
                             if (mapController.antHillAt(Colour.Black, p)) {
                                 blackScore++;
@@ -225,12 +231,11 @@ public class GameController {
                         a.setBrainState(instr.state1);
                         break;
                     case Turn:
-                        System.out.println("turn");
                         a.setAntDirection(Direction.fromInt(a.getAntDirection().turn(instr.lr)));
                         a.setBrainState(instr.state1);
                         break;
                     case Move:
-                        System.out.println("move");
+                        //System.out.println("move");
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
 
                         if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky ||
@@ -245,8 +250,7 @@ public class GameController {
                         }
                         break;
                     case Flip:
-                        System.out.println("flip");
-                        System.out.println(randomInt(instr.n));
+                        //System.out.println("flip");
                         int state = randomInt(instr.n) == 0 ? instr.state1 : instr.state2;
                         a.setBrainState(state);
                         break;

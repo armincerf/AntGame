@@ -7,11 +7,10 @@ import com.AntGame.Model.Ant;
 import com.AntGame.Model.Helper.Colour;
 import com.AntGame.Model.Helper.Direction;
 import com.AntGame.Model.Helper.Position;
-import com.badlogic.gdx.Game;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class AntControllerTest {
     GameController gc;

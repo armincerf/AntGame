@@ -85,11 +85,15 @@ public class MainMenu implements Screen {
 
         //Create text field style
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.background = skin.newDrawable("background", Color.GREEN);
+        textFieldStyle.background = skin.newDrawable("background", Color.DARK_GRAY);
         textFieldStyle.font = font;
         textFieldStyle.fontColor = Color.WHITE;
 
-
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.background = skin.newDrawable("background", Color.BLACK);
+        windowStyle.titleFont = font;
+        windowStyle.titleFontColor = Color.WHITE;
+        skin.add("dialog", windowStyle);
 
 
 
@@ -98,7 +102,8 @@ public class MainMenu implements Screen {
         skin.add("default", textButtonStyle);
         skin.add("default", labelStyle);
         skin.add("default", textFieldStyle);
-
+        skin.add("dialog", textButtonStyle);
+        skin.add("dialog", labelStyle);
 
     }
 

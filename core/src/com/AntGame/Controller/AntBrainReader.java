@@ -38,7 +38,7 @@ public class AntBrainReader {
 
             instrTypeList.add(buildInstruction(line));
 
-        } while (correct);
+        } while (line != null && correct);
 
         return instrTypeList;
     }
@@ -150,6 +150,7 @@ public class AntBrainReader {
             }
 
             if (!(senseDirection && cond && isState && isState2)) {
+                System.out.print("sense direction error in brain" + senseDirection + cond + isState + isState2);
                 correct = false;
             }
 
@@ -188,6 +189,7 @@ public class AntBrainReader {
 
             index = nextWhiteSpace++;
             if (!(isDigit && isState)) {
+                System.out.println("is dgit problem");
                 correct = false;
             }
 
@@ -227,6 +229,7 @@ public class AntBrainReader {
 
             index = nextWhiteSpace + 1;
             if (!(isDigit && isState)) {
+                System.out.println("is digit problem");
                 correct = false;
             }
 
@@ -267,6 +270,7 @@ public class AntBrainReader {
             }
 
             if (!(isState)) {
+                System.out.println("state problem pickup");
                 correct = false;
             }
 
@@ -292,6 +296,7 @@ public class AntBrainReader {
 
             index = nextWhiteSpace++;
             if (!(isState && isDirection)) {
+                System.out.println("turn problem");
                 correct = false;
             }
 
@@ -319,6 +324,7 @@ public class AntBrainReader {
             }
 
             if (!(isState && isState2)) {
+                System.out.println("move problem");
                 correct = false;
             }
         } else if (line.substring(index, index + 4).equals("flip")) {
@@ -354,6 +360,7 @@ public class AntBrainReader {
             }
 
             if (!(isState && isState2 && isState3)) {
+                System.out.println("flip problem");
                 correct = false;
             }
         } else {
