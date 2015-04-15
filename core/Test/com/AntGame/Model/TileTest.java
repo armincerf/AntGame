@@ -66,7 +66,10 @@ public class TileTest {
 
     @Test
     public void testPutAntOnTile() throws Exception {
+        Ant b = new Ant(new Position(5, 6), Colour.Black, Direction.DownLeft);
+        t = new Tile(TileType.Clear, new Position(5, 6));
 
+        assertFalse(t.hasAliveAnt());
     }
 
     @Test

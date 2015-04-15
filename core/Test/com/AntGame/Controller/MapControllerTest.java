@@ -29,7 +29,7 @@ public class MapControllerTest {
 
     @Test
     public void testCreateMapFromFile() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
     }
 
 
@@ -45,7 +45,7 @@ public class MapControllerTest {
     public void testCheckHillSpace() throws Exception {
         mc.createRandomMap();
 
-        for(int i = 0; i <= mc.getHeight(); i++){
+        for (int i = 0; i < mc.getHeight(); i++) {
             for(int j = 0; j < mc.getWidth(); j++){
                 if(mc.getMap().getRow(i).getTile(j).isAntHill()){
                     assertEquals(mc.checkHillSpace(j,i), true);
@@ -56,7 +56,7 @@ public class MapControllerTest {
 
     @Test
     public void testIsAntAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         Ant a1 = new Ant(Position.set(4, 1), Colour.Red, Direction.Right );
         mc.setAntAt(Position.set(4,1), a1);
         assertEquals(mc.isAntAt(Position.set(4, 1)), true);
@@ -64,7 +64,7 @@ public class MapControllerTest {
 
     @Test
     public void testGetAntAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         Ant a1 = new Ant(Position.set(4, 1), Colour.Red, Direction.Right );
         mc.setAntAt(Position.set(4,1), a1);
         assertNotEquals(mc.getAntAt(Position.set(4, 1)), null);
@@ -73,7 +73,7 @@ public class MapControllerTest {
 
     @Test
     public void testSetAntAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         Ant a1 = new Ant(Position.set(4, 1), Colour.Red, Direction.Right );
         mc.setAntAt(Position.set(4,1), a1);
         assertEquals(mc.isAntAt(Position.set(4, 1)), true);
@@ -83,7 +83,7 @@ public class MapControllerTest {
     @Test
     public void testClearAntAt() throws Exception {
         //SET ANT AT
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         Ant a1 = new Ant(Position.set(4, 1), Colour.Red, Direction.Right );
         mc.setAntAt(Position.set(4,1), a1);
 
@@ -96,13 +96,13 @@ public class MapControllerTest {
 
     @Test
     public void testFoodAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         assertEquals(mc.foodAt(Position.set(1,1)), 3);
     }
 
     @Test
     public void testSetFoodAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
 
         assertEquals(mc.foodAt(Position.set(4,1)), 0);
         mc.setFoodAt(Position.set(4,1), 4);
@@ -113,20 +113,20 @@ public class MapControllerTest {
 
     @Test
     public void testAntHillAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         assertEquals(mc.antHillAt(Colour.Red, Position.set(2, 3)), true);
     }
 
     @Test
     public void testSetMarkerAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         mc.setMarkerAt(Position.set(4, 1), Colour.Red, 2);
         assertEquals(mc.checkIfAnyMarkerAt(Position.set(4, 1), Colour.Red), true);
     }
 
     @Test
     public void testClearMarkerAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         mc.setMarkerAt(Position.set(4,1), Colour.Red, 2);
         assertEquals(mc.checkIfAnyMarkerAt(Position.set(4,1), Colour.Red), true);
 
@@ -141,7 +141,7 @@ public class MapControllerTest {
 
     @Test
     public void testCheckMarkerAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         mc.setMarkerAt(Position.set(4,1), Colour.Red, 2);
         assertEquals(mc.checkMarkerAt(Position.set(4, 1), Colour.Red, 2), true);
 
@@ -149,20 +149,20 @@ public class MapControllerTest {
 
     @Test
     public void testCheckIfAnyMarkerAt() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         mc.setMarkerAt(Position.set(4,1), Colour.Red, 2);
         assertEquals(mc.checkIfAnyMarkerAt(Position.set(4,1), Colour.Red), true);
     }
 
     @Test
     public void testGetWidth() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         assertEquals(mc.getWidth(), 10);
     }
 
     @Test
     public void testGetHeight() throws Exception {
-        mc.createMapFromFile("C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\tiny.world");
+        mc.createMapFromFile("assets/tiny.world");
         assertEquals(mc.getHeight(), 10);
     }
 }

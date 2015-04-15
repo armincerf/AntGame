@@ -19,7 +19,7 @@ public class AntBrainReaderTest {
 
     @Test
     public void testReadBrainFile() throws Exception {
-        String brain = "C:\\Users\\Bradley\\Documents\\GitHub\\AntGame\\core\\assets\\brain1.brain";
+        String brain = "assets/brain1.brain";
         assertNotEquals(ar.readBrainFile(brain), null);
     }
 
