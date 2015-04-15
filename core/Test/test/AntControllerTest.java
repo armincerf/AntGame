@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AntControllerTest {
     GameController gc;
@@ -53,12 +54,14 @@ public class AntControllerTest {
 
     @Test
     public void testOtherColour() throws Exception {
-
+        assertEquals(ac.otherColour(Colour.Black), Colour.Red);
     }
 
     @Test
     public void testGetMap() throws Exception {
-
+        assertTrue(ac.getMap().containsValue(a));
+        ac.getMap().clear();
+        assertTrue(ac.getMap().isEmpty());
     }
 
     @Test

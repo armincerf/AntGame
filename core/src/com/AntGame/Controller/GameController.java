@@ -167,6 +167,84 @@ public class GameController {
         return rand.nextInt(n);
     }
 
+    public void killAntAt(Position p) {
+        mapController.getMap().getRow(p.get_y()).getTile(p.get_x()).clearAnt();
+    }
+
+    public void checkForSurroundedAntAt(Position p) {
+        if (mapController.isAntAt(p)) {
+            Ant a = mapController.getAntAt(p);
+            if (adjacentAnts(p, antController.otherColour(a.getAntColour())) > 5) {
+                killAntAt(p);
+                mapController.setFoodAt(p, mapController.foodAt(p) + 3 + (a.hasFood() ? 1 : 0));
+            }
+        }
+    }
+
+    public void checkForSurroundedAnts(Position p) throws OutOfMapException {
+        checkForSurroundedAntAt(p);
+        for (int i = 0; i < 5; i++) {
+            checkForSurroundedAntAt(SenseDirection.adjacent_cell(p, Direction.fromInt(i)));
+        }
+    }
+
+    public int adjacentAnts(Position p, Colour ac) {
+        int no = 0;
+        for (int i = 0; i < 5; i++) {
+            Position pos = adjacentCell(p, i);
+            if (mapController.antHillAt(pos) && antAt(pos).getColour() == ac) {
+                no++;
+            }
+        }
+        return no;
+    }
+
+    public Position adjacentCell(Position p, int d) throws OutOfMapException {
+
+        Position position = new Position(0, 0); // init
+
+        switch (d) {
+            case 0:
+                position = new Position(p.get_x() + 1, p.get_y();
+                break;
+
+            case 1:
+                if (p.get_y() % 2 == 0) {
+                    position = new Position(p.get_x(), p.get_y() + 1);
+                } else {
+                    position = new Position(p.get_x() + 1, p.get_y() + 1);
+                }
+                break;
+            case 2:
+                if (p.get_y() % 2 == 0) {
+                    position = new Position(p.get_x() - 1, p.get_y() + 1);
+                } else {
+                    position = new Position(p.get_x(), p.get_y() + 1);
+                }
+                break;
+
+            case 3:
+                position = new Position(p.get_x() - 1, p.get_y());
+                break;
+
+            case 4:
+                if (p.get_y() % 2 == 0) {
+                    position = new Position(p.get_x() - 1, p.get_y() - 1);
+                } else {
+                    position = new Position(p.get_x(), p.get_y() - 1);
+                }
+                break;
+
+            case 5:
+                if (p.get_y() % 2 == 0) {
+                    position = new Position(p.get_x(), p.get_y() - 1);
+                } else {
+                    position = new Position(p.get_x() + 1, p.get_y() - 1);
+                }
+                break;
+        }
+        return position;
+    }
     /**
      * This determines the action a specific ant is to take on the next turn
      * @param id the id of the ant

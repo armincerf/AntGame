@@ -1,10 +1,7 @@
 package com.AntGame.Controller;
 
 import com.AntGame.Model.Ant;
-import com.AntGame.Model.Helper.Colour;
-import com.AntGame.Model.Helper.MapRow;
-import com.AntGame.Model.Helper.Marker;
-import com.AntGame.Model.Helper.Position;
+import com.AntGame.Model.Helper.*;
 import com.AntGame.Model.Map;
 import com.AntGame.Model.Tile;
 import com.AntGame.Model.TileType;
@@ -428,6 +425,7 @@ public class MapController {
 
 
     }
+
 
     public int getWidth() {
         return width;
