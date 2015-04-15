@@ -88,12 +88,7 @@ public class Tile {
     public void set_antHill(Colour colour) {
         this._antHill = colour;
         this.set_tileType(TileType.antHill);
-    } //TODO
-
-    /**
-     * Decrement the food
-     */
-    public void decrementFood() { this._food--;  }
+    }
 
     /**
      * Does the tile have an ant that is alive
