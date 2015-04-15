@@ -10,10 +10,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AntBrainReader {
 
     private static boolean correct = false;
+    final static String pattern = "(Turn (Right|Left) \\d{1,4})|(Flip [1-9][0-9]* \\d{1,4} \\d{1,4})|(Sense (Here|Ahead|LeftAhead|RightAhead) \\d{1,4} \\d{1,4} (Friend(WithFood)?|Foe(WithFood|Marker|Home)?|Food|Rock|Marker [0-5]|Home))|(Mark [0-5] \\d{1,4})|(Unmark [0-5] \\d{1,4})|(PickUp \\d{1,4} \\d{1,4})|(Drop \\d{1,4})|(Move \\d{1,4} \\d{1,4})";
+
 
     /**
      * Reads in a file and returns a list of instructions
@@ -34,8 +38,7 @@ public class AntBrainReader {
 
             if(line == null)
                 break;
-            checkSyntax(line);
-
+            syntaxCheck(line);
             instrTypeList.add(buildInstruction(line));
 
         } while (line != null && correct);
@@ -52,325 +55,22 @@ public class AntBrainReader {
         return correct;
     }
 
-    /**
-     * checks the syntax of the ant brain and searches for the special commands in the game
-     * @param line in lower cases
-     * @return correct as a boolean value, else the error message
-     */
-    public static void checkSyntax(String line) {
-        line = line.toLowerCase();
+
+    public static void syntaxCheck(String line) {
+        Pattern r = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        System.out.println(line.length());
+        line.replaceAll(" *;.*", "");
+        System.out.println(line.length());
+        Matcher m = r.matcher(line);
+        boolean matches = m.matches();
+        if (!matches) {
+            System.out.println("parse failed");
+                correct = false;
+            }
         correct = true;
-        int index;
-
-        index = 0;
-        line = line + "               $";
-        if (line.substring(index, index + 5).equals("sense")) {
-            boolean senseDirection = false;
-            int nextWhiteSpace = 0;
-            index += 6;
-
-            if (line.substring(index, index + 4).equals("here")) {
-                senseDirection = true;
-                index += 5;
-            } else if (line.substring(index, index + 5).equals("ahead")) {
-                senseDirection = true;
-                index += 6;
-            } else if (line.substring(index, index + 9).equals("leftahead")) {
-                senseDirection = true;
-                index += 10;
-            } else if (line.substring(index, index + 10).equals("rightahead")) {
-                senseDirection = true;
-                index += 11;
-            }
-            nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-
-            nextWhiteSpace++;
-            index = nextWhiteSpace;
-            boolean isState2 = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState2 = true;
-            }
-            boolean cond = false;
-            index = nextWhiteSpace + 1;
-            if (line.substring(index, index + 6).equals("friend")) {
-                cond = true;
-                index += 7;
-            } else if (line.substring(index, index + 3).equals("foe")) {
-                cond = true;
-                index += 4;
-            } else if (line.substring(index, index + 14).equals("friendwithfood")) {
-                cond = true;
-                index += 15;
-            } else if (line.substring(index, index + 11).equals("foewithfood")) {
-                cond = true;
-                index += 12;
-            } else if (line.substring(index, index + 4).equals("food")) {
-                cond = true;
-                index += 5;
-            } else if (line.substring(index, index + 4).equals("rock")) {
-                cond = true;
-                index += 5;
-            } else if (line.substring(index, index + 8).equals("marker 0")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 8).equals("marker 1")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 8).equals("marker 2")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 8).equals("marker 3")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 8).equals("marker 4")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 8).equals("marker 5")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 9).equals("foemarker")) {
-                cond = true;
-                index += 10;
-            } else if (line.substring(index, index + 4).equals("home")) {
-                cond = true;
-                index += 5;
-            } else if (line.substring(index, index + 7).equals("foehome")) {
-                cond = true;
-                index += 8;
-            }
-
-            if (!(senseDirection && cond && isState && isState2)) {
-                System.out.print("sense direction error in brain" + senseDirection + cond + isState + isState2);
-                correct = false;
-            }
-
-        } else if (line.substring(index, index + 4).equals("mark")) {
-            boolean isDigit = false;
-            index += 5;
-
-            if (line.substring(index, index + 1).equals("0")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("1")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("2")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("3")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("4")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("5")) {
-                isDigit = true;
-                index += 2;
-            }
-
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-
-            index = nextWhiteSpace++;
-            if (!(isDigit && isState)) {
-                System.out.println("is dgit problem");
-                correct = false;
-            }
-
-
-        } else if (line.substring(index, index + 6).equals("unmark")) {
-            boolean isDigit = false;
-            index += 7;
-
-            if (line.substring(index, index + 1).equals("0")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("1")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("2")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("3")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("4")) {
-                isDigit = true;
-                index += 2;
-            } else if (line.substring(index, index + 1).equals("5")) {
-                isDigit = true;
-                index += 2;
-            }
-
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-
-            index = nextWhiteSpace + 1;
-            if (!(isDigit && isState)) {
-                System.out.println("is digit problem");
-                correct = false;
-            }
-
-        } else if (line.substring(index, index + 6).equals("pickup")) {
-            index += 7;
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-            nextWhiteSpace++;
-            index = nextWhiteSpace;
-            boolean isState2 = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState2 = true;
-            }
-            index = nextWhiteSpace + 1;
-
-            if (!(isState && isState2)) {
-                correct = false;
-            }
-        } else if (line.substring(index, index + 4).equals("drop")) {
-            index += 5;
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-
-            if (!(isState)) {
-                System.out.println("state problem pickup");
-                correct = false;
-            }
-
-        } else if (line.substring(index, index + 4).equals("turn")) {
-
-            index += 5;
-            boolean isDirection = false;
-            if (line.substring(index, index + 4).equals("left")) {
-                isDirection = true;
-                index += 5;
-            } else if (line.substring(index, index + 5).equals("right")) {
-                isDirection = true;
-                index += 6;
-            }
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-
-            index = nextWhiteSpace++;
-            if (!(isState && isDirection)) {
-                System.out.println("turn problem");
-                correct = false;
-            }
-
-        } else if (line.substring(index, index + 4).equals("move")) {
-
-            index += 5;
-
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-            nextWhiteSpace++;
-            index = nextWhiteSpace;
-            boolean isState2 = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState2 = true;
-            }
-
-            if (!(isState && isState2)) {
-                System.out.println("move problem");
-                correct = false;
-            }
-        } else if (line.substring(index, index + 4).equals("flip")) {
-            index += 5;
-
-            int nextWhiteSpace = index;
-            boolean isState = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState = true;
-            }
-            nextWhiteSpace++;
-            index = nextWhiteSpace;
-            boolean isState2 = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState2 = true;
-            }
-            nextWhiteSpace++;
-            index = nextWhiteSpace;
-            boolean isState3 = false;
-            while (nextWhiteSpace < line.length() && !(line.substring(nextWhiteSpace, nextWhiteSpace + 1).equals(" "))) {
-                nextWhiteSpace++;
-
-            }
-            if (line.substring(index, nextWhiteSpace).matches("\\d+")) {
-                isState3 = true;
-            }
-
-            if (!(isState && isState2 && isState3)) {
-                System.out.println("flip problem");
-                correct = false;
-            }
-        } else {
-            correct = false;
-            System.out.println("There is a problem with the brain");
         }
 
 
-
-    }
 
     //Most hacky parser ever,  10/10 - IGN
 
@@ -433,7 +133,8 @@ public class AntBrainReader {
 
             default:
                 newInstr = null;
-                System.out.println("command not correct");
+                System.out.println("command not correct " + wordList[0]);
+
                 break;
         }
         return newInstr;

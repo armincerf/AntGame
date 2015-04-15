@@ -191,7 +191,6 @@ public class GameController {
                         a.setBrainState(s1);
                         break;
                     case Mark:
-                        System.out.println("mark" + instr.state1);
                         mapController.setMarkerAt(p, a.getAntColour(), instr.marker.getMarkerNum());
                             a.setBrainState(instr.state1);
                         break;
@@ -221,6 +220,7 @@ public class GameController {
                         if (a.hasFood()) {
                             if (mapController.antHillAt(Colour.Black, p)) {
                                 blackScore++;
+                                System.out.println(blackScore);
                             }
                             if (mapController.antHillAt(Colour.Red, p)) {
                                 redScore++;

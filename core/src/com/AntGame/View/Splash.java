@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.soap.Text;
 import java.io.IOException;
 
 
@@ -26,7 +27,7 @@ public class Splash implements Screen {
     private TextButton selectBrain1, selectBrain2, selectWorld, start, back;
     private Label brain1Label, brain2Label, worldLabel;
     private TextField setLimit;
-    private static String brainFile1 = "/Users/Siren/AntGame/core/assets/brain1.brain", brainFile2 = "/Users/Siren/AntGame/core/assets/brain1.brain", worldFile = "/Users/Siren/AntGame/core/assets/1.world";
+    private static String brainFile1 = "/Users/alexdavis/Documents/AntGame/core/assets/1.brain", brainFile2 = brainFile1, worldFile = "/Users/alexdavis/Documents/AntGame/core/assets/1.world";
     private Table table = new Table();
     final JFileChooser chooser = new JFileChooser();
     private boolean open = false;

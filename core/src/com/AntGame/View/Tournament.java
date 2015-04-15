@@ -197,7 +197,6 @@ public class Tournament implements Screen {
                 }
                 System.out.println("player " + i + " vs player " + j + brainList.get(i));
                 GameController gc = new GameController();
-
                 gc.Initialize();
                 gc.setAntInstructions(brainList.get(i), brainList.get(j));
                 gc.getMapController().createMapFromFile(worldFile);
@@ -205,7 +204,7 @@ public class Tournament implements Screen {
                 Map map = gc.getAntController().getMap();
                 System.out.println(map.toString());
 
-                for (int k = 0; k < 100000; k++) {
+                for (int k = 0; k < 300000; k++) {
                     for (Object a : map.values()) {
                         Ant ant = (Ant) a;
                         try {
