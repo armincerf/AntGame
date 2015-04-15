@@ -64,11 +64,11 @@ public class Splash implements Screen {
         start = new TextButton("Start", MainMenu.skin);
         back = new TextButton("Back", MainMenu.skin);
 
-        brain1Label = new Label("No brain selected", MainMenu.skin);
-        brain2Label = new Label("No brain selected", MainMenu.skin);
-        worldLabel = new Label("No world selected", MainMenu.skin);
+        brain1Label = new Label("Sample Brain", MainMenu.skin);
+        brain2Label = new Label("Sample Brain", MainMenu.skin);
+        worldLabel = new Label("Sample World", MainMenu.skin);
 
-        setLimit = new TextField("Enter number of rounds: ", MainMenu.skin);
+        setLimit = new TextField("Enter number of rounds: 100000", MainMenu.skin);
         setLimit.setMessageText("please");
 
         selectBrain1.addListener(new ClickListener() {
@@ -163,7 +163,7 @@ public class Splash implements Screen {
         table.row();
         table.add(start).size(150, 60).padBottom(20);
         table.add(back).size(150, 60).padBottom(20);
-        table.add(setLimit).size(300, 50);
+        table.add(setLimit).size(300, 60).padBottom(20);
 
 
         table.setFillParent(true);

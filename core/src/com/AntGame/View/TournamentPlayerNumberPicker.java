@@ -26,48 +26,20 @@ public class TournamentPlayerNumberPicker implements Screen {
     int noPlayers;
     private Stage stage = new Stage();
     private Table table = new Table();
-
+    private Skin winSkin;
     @Override
     public void show() {
         MainMenu.createBasicSkin();
-        BitmapFont font = new BitmapFont();
-        final Skin winSkin = new Skin();
-        winSkin.add("default", font);
-
-        //Create texture
-        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10, Pixmap.Format.RGB888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        winSkin.add("background", new Texture(pixmap));
-        Window.WindowStyle windowStyle = new Window.WindowStyle();
-        windowStyle.background = winSkin.newDrawable("background", Color.BLACK);
-        windowStyle.titleFont = font;
-        windowStyle.titleFontColor = Color.WHITE;
-        winSkin.add("dialog", windowStyle);
-        //Create button style
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = winSkin.newDrawable("background", Color.GRAY);
-        textButtonStyle.down = winSkin.newDrawable("background", Color.CYAN);
-        textButtonStyle.checked = winSkin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.over = winSkin.newDrawable("background", Color.LIGHT_GRAY);
-        textButtonStyle.font = winSkin.getFont("default");
-
-        //Create label style
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.background = winSkin.newDrawable("background", Color.DARK_GRAY);
-        labelStyle.font = font;
-        labelStyle.fontColor = Color.WHITE;
-        winSkin.add("default", labelStyle);
-        winSkin.add("dialog", textButtonStyle);
+        winSkin = new Skin();
 
 
-        start = new TextButton("Start tourney", MainMenu.skin);
-        input = new TextField("2", MainMenu.skin);
+        start = new TextButton("Start Tournament", MainMenu.skin);
+        input = new TextField("Number of players: 2", MainMenu.skin);
         start.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (isInteger(input.getText())) {
-                    noPlayers = Integer.parseInt(input.getText());
+                if (isInteger(input.getText().replaceAll("(Number of players: *)", ""))) {
+                    noPlayers = Integer.parseInt(input.getText().replaceAll("(Number of players: *)", ""));
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new Tournament(noPlayers));
                 } else {
                     Label label = new Label("Please enter a number.", winSkin);
@@ -150,5 +122,36 @@ public class TournamentPlayerNumberPicker implements Screen {
     public void dispose() {
         stage.dispose();
 
+    }
+
+    public void createSkin() {
+        BitmapFont font = new BitmapFont();
+        winSkin.add("default", font);
+
+        //Create texture
+        Pixmap pixmap = new Pixmap(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 10, Pixmap.Format.RGB888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        winSkin.add("background", new Texture(pixmap));
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.background = winSkin.newDrawable("background", Color.BLACK);
+        windowStyle.titleFont = font;
+        windowStyle.titleFontColor = Color.WHITE;
+        winSkin.add("dialog", windowStyle);
+        //Create button style
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = winSkin.newDrawable("background", Color.GRAY);
+        textButtonStyle.down = winSkin.newDrawable("background", Color.CYAN);
+        textButtonStyle.checked = winSkin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.over = winSkin.newDrawable("background", Color.LIGHT_GRAY);
+        textButtonStyle.font = winSkin.getFont("default");
+
+        //Create label style
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.background = winSkin.newDrawable("background", Color.DARK_GRAY);
+        labelStyle.font = font;
+        labelStyle.fontColor = Color.WHITE;
+        winSkin.add("default", labelStyle);
+        winSkin.add("dialog", textButtonStyle);
     }
 }

@@ -71,7 +71,6 @@ public class Screen2 implements Screen {
     public PolygonSprite polySpriteBlackAnt = new PolygonSprite(makePoints(Color.BLUE));
 
 
-
     public GameController gc;
     private TextButton back, start, pause, speedUp, slowDown;
     private Label blackScore, redScore;
@@ -105,7 +104,7 @@ public class Screen2 implements Screen {
                     System.out.println("Chosen: " + object);
                 }
             }.text("Game Over!").show(stage);
-            TextButton dbutton = new TextButton("Game Over - Click to go back", MainMenu.skin, "dialog");
+            TextButton dbutton = new TextButton("Game Over - Click to go back\n Final score: \n" + redScore.getText() + "\n" + blackScore.getText(), MainMenu.skin, "dialog");
             dialog.button(dbutton, true);
             dbutton.addListener(new ClickListener() {
 
@@ -125,7 +124,7 @@ public class Screen2 implements Screen {
         }
         //draw all actors on the Stage.getBatch()
         Map map = gc.getAntController().getMap();
-        if(run) {
+        if (run) {
             for (Object a : map.values()) {
                 Ant ant = (Ant) a;
 
@@ -140,9 +139,9 @@ public class Screen2 implements Screen {
 
 
             }
-            moves += 1*speed;
-            if(moves%500 == 0) {
-                System.out.println(moves+ " moves");
+            moves += 1 * speed;
+            if (moves % 500 == 0) {
+                System.out.println(moves + " moves");
             }
 
         }
@@ -153,7 +152,7 @@ public class Screen2 implements Screen {
                 if (draw) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Rocky)) {
                         drawCell(polySpriteRock, j, i);
-                        }
+                    }
                     if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.Clear)) {
                         drawCell(polySpriteClear, j, i);
                     }
@@ -168,50 +167,44 @@ public class Screen2 implements Screen {
 
                     try {
                         if (gc.getMapController().isAntAt(new Position(j, i))) {
-
-                            if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().hasFood()) {
-                                if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
-                                    drawCell(polySpriteRHill, j, i);
-                                } else {
-                                    drawCell(polySpriteBHill, j, i);
-                                }
+                            if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
+                                drawCell(polySpriteBlackAnt, j, i);
                             } else {
-                                if (gc.getMapController().getMap().getRow(i).getTile(j).getAntOnTile().getAntColour().equals(Colour.Black)) {
-                                    drawCell(polySpriteBlackAnt, j, i);
-
-                                } else {
-                                    drawCell(polySpriteRedAnt, j, i);
-                                }
+                                drawCell(polySpriteRedAnt, j, i);
                             }
-                            if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
-                                float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
-                                scale = (scale / 100) * 4;
-                                scale = (float) (scale + 0.6);
-                                drawCell(polySpriteClear, j, i);
-                                drawCell(polySpriteFood, j, i, scale);
 
-                            }
 
                         } else if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
 
                             if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
-                                drawCell(polySpriteBHill, j, i);
-                            } else {
-                                drawCell(polySpriteRHill, j, i);
-                            }
-                            if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
-                                float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
-                                scale = (scale / 100) * 4;
-                                scale = (float) (scale + 0.6);
-                                drawCell(polySpriteClear, j, i);
-                                drawCell(polySpriteFood, j, i, scale);
+                                if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
+                                    float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
+                                    scale = (scale / 100) * 4;
+                                    scale = (float) (scale + 0.6);
+                                    drawCell(polySpriteBHill, j, i);
+                                    drawCell(polySpriteFood, j, i, scale);
 
+                                } else {
+                                    drawCell(polySpriteBHill, j, i);
+                                }
+                            } else {
+                                if (gc.getMapController().getMap().getRow(i).getTile(j).getFood() > 0) {
+                                    float scale = gc.getMapController().getMap().getRow(i).getTile(j).getFood();
+                                    scale = (scale / 100) * 4;
+                                    scale = (float) (scale + 0.6);
+                                    drawCell(polySpriteRHill, j, i);
+                                    drawCell(polySpriteFood, j, i, scale);
+
+                                } else {
+                                    drawCell(polySpriteRHill, j, i);
+                                }
                             }
+
                         }
 
                     } catch (OutOfMapException e) {
                         e.printStackTrace();
-                        }
+                    }
                 }
 
             }
@@ -270,8 +263,6 @@ public class Screen2 implements Screen {
         }
 
 
-
-
         MainMenu.createBasicSkin();
         blackScore = new Label("Black Team Score = " + gc.getScore(Colour.Black), MainMenu.skin);
         redScore = new Label("Red Team Score = " + gc.getScore(Colour.Red), MainMenu.skin);
@@ -289,7 +280,7 @@ public class Screen2 implements Screen {
                 if (speed > 1) {
                     speed--;
                 }
-                System.out.println(speed+"Speed");
+                System.out.println(speed + "Speed");
             }
         });
         back = new TextButton("Back", MainMenu.skin);
@@ -329,7 +320,6 @@ public class Screen2 implements Screen {
         table.add(slowDown).size(150, 60).padBottom(20).padLeft(1300).row();
 
 
-
         table.setFillParent(true);
         stage.addActor(table);
         boolean aa = false;
@@ -337,12 +327,12 @@ public class Screen2 implements Screen {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
 
-                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill) ) {
+                if (gc.getMapController().getMap().getRow(i).getTile(j).getTileType().equals(TileType.antHill)) {
                     if (gc.getMapController().getMap().getRow(i).getTile(j).get_antHill().equals(Colour.Black)) {
                         try {
                             Ant a = new Ant(new Position(j, i), Colour.Black, Direction.Right);
-                                gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
-                                gc.getAntController().addAnt(a);
+                            gc.getMapController().getMap().getRow(i).getTile(j).putAntOnTile(a);
+                            gc.getAntController().addAnt(a);
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }

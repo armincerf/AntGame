@@ -238,8 +238,7 @@ public class GameController {
                         //System.out.println("move");
                         Position newPos = SenseDirection.adjacent_cell(p, a.getAntDirection());
 
-                        if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky ||
-                                mapController.isAntAt(newPos)) {
+                        if (mapController.getMap().getRow(newPos.get_y()).getTile(newPos.get_x()).getTileType() == TileType.Rocky) {
                             a.setBrainState(instr.state2);
                         } else {
                             mapController.clearAntAt(p);

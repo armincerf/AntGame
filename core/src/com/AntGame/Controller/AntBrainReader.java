@@ -16,7 +16,13 @@ import java.util.regex.Pattern;
 public class AntBrainReader {
 
     private static boolean correct = false;
-    final static String pattern = "(Turn (Right|Left) \\d{1,4})|(Flip [1-9][0-9]* \\d{1,4} \\d{1,4})|(Sense (Here|Ahead|LeftAhead|RightAhead) \\d{1,4} \\d{1,4} (Friend(WithFood)?|Foe(WithFood|Marker|Home)?|Food|Rock|Marker [0-5]|Home))|(Mark [0-5] \\d{1,4})|(Unmark [0-5] \\d{1,4})|(PickUp \\d{1,4} \\d{1,4})|(Drop \\d{1,4})|(Move \\d{1,4} \\d{1,4})";
+    final static String pattern = "(Turn (Right|Left) \\d{1,4})|(Flip [1-9][0-9]* \\d{1,4} \\d{1,4})|" +
+            "(Sense (Here|Ahead|LeftAhead|RightAhead) \\d{1,4} \\d{1,4} (Friend(WithFood)?|Foe(WithFood|Marker|Home)?|Food|Rock|Marker [0-5]|Home))|" +
+            "(Mark [0-5] \\d{1,4})|" +
+            "(Unmark [0-5] \\d{1,4})|" +
+            "(PickUp \\d{1,4} \\d{1,4})|" +
+            "(Drop \\d{1,4})|" +
+            "(Move \\d{1,4} \\d{1,4})";
 
 
     /**
@@ -38,6 +44,7 @@ public class AntBrainReader {
 
             if(line == null)
                 break;
+            line = line.replaceAll("( *;.*)", ""); //removes any comments in the brain file
             syntaxCheck(line);
             instrTypeList.add(buildInstruction(line));
 
@@ -58,14 +65,14 @@ public class AntBrainReader {
 
     public static void syntaxCheck(String line) {
         Pattern r = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-        System.out.println(line.length());
-        line.replaceAll(" *;.*", "");
-        System.out.println(line.length());
+
         Matcher m = r.matcher(line);
         boolean matches = m.matches();
+        System.out.println(line);
         if (!matches) {
             System.out.println("parse failed");
                 correct = false;
+            System.out.println(line);
             }
         correct = true;
         }

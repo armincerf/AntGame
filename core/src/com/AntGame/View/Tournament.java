@@ -38,7 +38,6 @@ public class Tournament implements Screen {
     private Label brain1Label, worldLabel;
     private static String brainFile1 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", brainFile2 = "/Users/alexdavis/Downloads/test/core/assets/brain1.brain", worldFile = "/Users/alexdavis/Downloads/test/core/assets/1.world";
     private Table table = new Table();
-    private TextField input;
     private int players;
     Skin winSkin;
     private int currentPlayer = 0;
@@ -48,7 +47,7 @@ public class Tournament implements Screen {
     public Tournament(int players) {
         this.players = players;
         brainList = new ArrayList<>();
-        System.out.println(players);
+        System.out.println("players = " + players);
     }
 
 
@@ -73,12 +72,11 @@ public class Tournament implements Screen {
         final JFileChooser chooser = new JFileChooser();
 
         MainMenu.createBasicSkin();
-        selectBrain = new TextButton("Select Brain for Player " + currentPlayer, MainMenu.skin);
+        selectBrain = new TextButton("Select Brain for Player " + (currentPlayer + 1), MainMenu.skin);
         selectWorld = new TextButton("Select world file", MainMenu.skin);
         start = new TextButton("Next", MainMenu.skin);
         back = new TextButton("Back", MainMenu.skin);
 
-        input = new TextField("1", winSkin);
 
 
         brain1Label = new Label("No brain selected", MainMenu.skin);
@@ -141,6 +139,7 @@ public class Tournament implements Screen {
                         System.out.println(brainList.size() + " brains added");
 
                         brain1Label.setText("Add another brain");
+                        selectBrain.setText("Select Brain for Player " + (currentPlayer + 1));
                         currentPlayer++;
                         if (players == currentPlayer) {
                             start.setText("Start");
@@ -177,7 +176,6 @@ public class Tournament implements Screen {
         table.row();
         table.add(start).size(150, 60).padBottom(20);
         table.add(back).size(150, 60).padBottom(20);
-        table.add(input).size(200, 60).padBottom(20);
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -199,6 +197,7 @@ public class Tournament implements Screen {
                 GameController gc = new GameController();
                 gc.Initialize();
                 gc.setAntInstructions(brainList.get(i), brainList.get(j));
+
                 gc.getMapController().createMapFromFile(worldFile);
                 addAnts(gc);
                 Map map = gc.getAntController().getMap();
@@ -209,9 +208,7 @@ public class Tournament implements Screen {
                         Ant ant = (Ant) a;
                         try {
                             gc.step(ant.getID());
-                            if (k % 10000 == 0) {
-                                System.out.println(k);
-                            }
+
                         } catch (OutOfMapException e) {
                             e.printStackTrace();
                         }
@@ -221,13 +218,42 @@ public class Tournament implements Screen {
                 redScore = gc.getScore(Colour.Red);
                 System.out.println("moves = " + gc.getMoves());
                 System.out.println("black score = " + blackScore + " red score = " + redScore);
-
+                for (int k = 0; k < players; k++) {
+                    scores[k] = blackScore > redScore ? scores[i]++ : scores[j]++;
+                }
 
             }
         }
+        Dialog dialog = new Dialog("", MainMenu.skin, "dialog") {
+            protected void result(Object object) {
+            }
+        }.text("Game Over!").show(stage);
+        StringBuilder sb = new StringBuilder();
+        for (int o = 0; o < players; o++) {
+            System.out.println("this shows the score number" + o + brainList.get(o));
+            sb.append("Player ");
+            sb.append(o + 1);
+            sb.append("score = " + scores[o] + "\n");
+        }
+        TextButton dbutton = new TextButton("Tournament over!\n Final scores: " + sb.toString(), MainMenu.skin, "dialog");
+        dialog.button(dbutton, true);
+        dbutton.addListener(new ClickListener() {
 
+            /**
+             * Action listener for the play button
+             *
+             * @param event an event
+             * @param x     mouse position x
+             * @param y     mouse position y
+             */
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 
+            }
+        });
     }
+
 
     private void addAnts(GameController gc) {
         for (int i = 0; i < 150; i++) {
