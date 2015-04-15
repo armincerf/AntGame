@@ -56,6 +56,16 @@ public class GameController {
     }
 
     /**
+     * Gets list of instructions by ant colour
+     * @param colour an Colour Enum Value
+     */
+    public List<Instruction> getAntInstructions(Colour colour)
+    {
+        return colour == Colour.Red ? redAntInstructions : blackAntInstructions;
+    }
+
+
+    /**
      * Gets the instruction at a state for a colours brain
      * @param colour color of ant
      * @param state line number in brain
