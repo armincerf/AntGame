@@ -99,7 +99,7 @@ public class AntBrainReader {
                 newInstr.state2 = Integer.parseInt(wordList[3]);
                 newInstr.condition = Condition.valueOf(wordList[4]);
                 if(newInstr.condition == Condition.marker)
-                    newInstr.condition.markerNum = Integer.parseInt(wordList[5]);
+                    newInstr.marker = new Marker(Integer.parseInt(wordList[5]));
                 break;
             case "mark":
                 newInstr.instrType = InstructionEnum.Mark;

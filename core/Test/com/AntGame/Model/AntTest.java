@@ -34,7 +34,6 @@ public class AntTest {
         a = new Ant(p, Colour.Black, Direction.DownLeft);
         ac.addAnt(a);
     }
-
     /**
      * Tests before and after resting
      *

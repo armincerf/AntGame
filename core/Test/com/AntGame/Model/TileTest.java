@@ -47,19 +47,19 @@ public class TileTest {
     public void testIsAntHill() throws Exception {
         assertFalse(t.isAntHill());
         t.set_tileType(TileType.antHill);
+        t.set_antHill(Colour.Black);
         assertTrue(t.isAntHill());
     }
 
     @Test
     public void testHasAliveAnt() throws Exception {
-        assertFalse(t.hasAliveAnt());
         a.set_antPosition(new Position(3, 3));
+        t.putAntOnTile(a);
         assertTrue(t.hasAliveAnt());
     }
 
     @Test
     public void testClearAnt() throws Exception {
-        a.set_antPosition(new Position(3, 3));
         t.clearAnt();
         assertFalse(t.hasAliveAnt());
     }
@@ -70,11 +70,13 @@ public class TileTest {
         t = new Tile(TileType.Clear, new Position(5, 6));
 
         assertFalse(t.hasAliveAnt());
+        t.putAntOnTile(b);
+        assertTrue(t.hasAliveAnt());
     }
 
     @Test
     public void testPutMarkerOnTile() throws Exception {
-
+        assertEquals(t.getMarkerOnTile(), null);
     }
 
     @Test

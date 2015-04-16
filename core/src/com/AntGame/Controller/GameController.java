@@ -129,7 +129,9 @@ public class GameController {
                 case rock:
                     return false;
                 case marker:
-                    return mapController.checkMarkerAt(position, colour, condition.markerNum);
+                    if (mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile() != null)
+                        return mapController.checkMarkerAt(position, colour, mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getMarkerOnTile().getMarkerNum());
+                    return false;
                 case foemarker:
                     return mapController.checkIfAnyMarkerAt(position, antController.otherColour(colour));
                 case home:
