@@ -75,9 +75,10 @@ public class Ant {
 
     /**
      * Set the amount of time to rest
-     * @param periodLength amount of time to rest
      */
-    public void setRestPeriod(int periodLength){    this._resting = periodLength;    }
+    public void setRestPeriod() {
+        this._resting = 14;
+    }
 
     /**
      * Decrement the time of resting

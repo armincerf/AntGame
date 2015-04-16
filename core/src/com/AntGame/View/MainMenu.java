@@ -94,11 +94,7 @@ public class MainMenu implements Screen {
         windowStyle.titleFont = font;
         windowStyle.titleFontColor = Color.WHITE;
         skin.add("dialog", windowStyle);
-
-
-
-
-
+        
         skin.add("default", textButtonStyle);
         skin.add("default", labelStyle);
         skin.add("default", textFieldStyle);

@@ -25,7 +25,6 @@ import java.io.IOException;
  */
 public class Splash implements Screen {
     private Stage stage = new Stage();
-    private TextButton selectBrain1, selectBrain2, selectWorld, start, back, randomWorld;
     private Label brain1Label, brain2Label, worldLabel;
     private TextField setLimit;
     private static String brainFile2 = "./core/assets/1.brain", brainFile1 = "./core/assets/testBrain.brain", worldFile = "./core/assets/1.world";
@@ -59,13 +58,13 @@ public class Splash implements Screen {
         final JFileChooser chooser = new JFileChooser();
 
         MainMenu.createBasicSkin();
-        selectBrain1 = new TextButton("Select Brain for Player 1", MainMenu.skin);
-        selectBrain2 = new TextButton("Select Brain for player2", MainMenu.skin);
-        selectWorld = new TextButton("Select world file", MainMenu.skin);
-        randomWorld = new TextButton("Generate Random World", MainMenu.skin);
+        TextButton selectBrain1 = new TextButton("Select Brain for Player 1", MainMenu.skin);
+        TextButton selectBrain2 = new TextButton("Select Brain for player2", MainMenu.skin);
+        TextButton selectWorld = new TextButton("Select world file", MainMenu.skin);
+        TextButton randomWorld = new TextButton("Generate Random World", MainMenu.skin);
 
-        start = new TextButton("Start", MainMenu.skin);
-        back = new TextButton("Back", MainMenu.skin);
+        TextButton start = new TextButton("Start", MainMenu.skin);
+        TextButton back = new TextButton("Back", MainMenu.skin);
 
         brain1Label = new Label("Sample Brain", MainMenu.skin);
         brain2Label = new Label("Sample Brain", MainMenu.skin);

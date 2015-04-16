@@ -34,7 +34,7 @@ public class GameController {
      *
      * @throws IOException
      */
-    public void Initialize() throws IOException {
+    public void Initialize() {
         mapController = new MapController();
         antController = new AntController();
         moves = 0;
@@ -299,7 +299,7 @@ public class GameController {
                             mapController.clearAntAt(p);
                             mapController.setAntAt(newPos, a);
                             a.setBrainState(instr.state1);
-                            a.setRestPeriod(14);
+                            a.setRestPeriod();
                             //TODO: CHECK IF SURROUNDED
                         }
                         break;

@@ -30,7 +30,7 @@ public class MapController {
     }
 
 
-    public void createMapFromFile(String filename) throws IOException {
+    public void createMapFromFile(String filename) {
 
         int amountOfRocky, amountOfRedAntHills, amountOfBlackAntHills, amountOfFood;
         amountOfBlackAntHills = 0;

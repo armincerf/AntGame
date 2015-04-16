@@ -30,6 +30,10 @@ public class AntBrainReaderTest {
         ar.syntaxCheck("sense ahead 1 3 Food");
 
         assertEquals(ar.getCorrect(), true);
+
+        ar.syntaxCheck("sense aead 1 3 Food");
+
+        assertFalse(ar.getCorrect());
     }
 
     @Test

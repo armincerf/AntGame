@@ -11,7 +11,6 @@ public class Map {
     private MapRow[] _rows;
 
 
-    private int width;
     private int height;
 
     /**
@@ -23,7 +22,7 @@ public class Map {
     public Map(int width, int height){
         this._rows = new MapRow[height];
         this.height = height;
-        this.width = width;
+        int width1 = width;
     }
 
     /**

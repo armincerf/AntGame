@@ -58,8 +58,6 @@ public class Screen2 implements Screen {
             x, y + side + h + h,
             x - r, y + side + h,
             x - r, y + h
-
-
     };
 
     public PolygonSprite polySpriteRock = new PolygonSprite(makePoints(Color.BLACK));
