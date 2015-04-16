@@ -21,6 +21,17 @@ public class SenseDirectionTest {
 
     @Test
     public void testSensed_cell() throws Exception {
+    	Position p = Position.Set(1,1);
+
+   		//Check still in the same location
+    	assertEquals(SenseDirection.sensed_cell(p, Direction.Right, SenseDirection.here), Position.Set(1,1));
+    	//Check one cell to the right
+    	assertEquals(SenseDirection.sensed_cell(p, Direction.Right, SenseDirection.ahead), Position.Set(2,1));
+		
+		assertEquals(SenseDirection.sensed_cell(p, Direction.UpRight, SenseDirection.rightahead), Position.Set(2,1));
+
+		assertEquals(SenseDirection.sensed_cell(p, Direction.DownRight, SenseDirection.leftahead), Position.Set(2,1));
+
 
     }
 }
