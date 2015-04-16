@@ -4,7 +4,6 @@ import com.AntGame.Model.Ant;
 import com.AntGame.Model.Helper.Colour;
 import com.AntGame.Model.Helper.Direction;
 import com.AntGame.Model.Helper.Position;
-import javafx.geometry.Pos;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,8 +42,7 @@ public class MapControllerTest {
 
     @Test
     public void testCheckHillSpace() throws Exception {
-        mc.createRandomMap();
-
+        mc.createMapFromFile("assets/1.world");
         for (int i = 0; i < mc.getHeight(); i++) {
             for(int j = 0; j < mc.getWidth(); j++){
                 if(mc.getMap().getRow(i).getTile(j).isAntHill()){

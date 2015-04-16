@@ -21,7 +21,7 @@ public class GameController {
     private List<Instruction> redAntInstructions, blackAntInstructions;
     private int moves;
     private Random rand = new Random();
-    private int blackScore, redScore, count;
+    private int blackScore, redScore;
     private int killed;
 
 
@@ -112,7 +112,6 @@ public class GameController {
         if (mapController.getMap().getRow(position.get_y()).getTile(position.get_x()).getTileType() == TileType.Rocky) {
             return condition == Condition.rock;
         } else {
-
             switch (condition){
                 case friend:
                     return mapController.isAntAt(position) && mapController.getAntAt(position).getAntColour() == colour;
@@ -138,7 +137,6 @@ public class GameController {
                     return mapController.antHillAt(colour, position);
                 case foehome:
                     return mapController.antHillAt(antController.otherColour(colour), position);
-
 
             }
 

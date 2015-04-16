@@ -24,9 +24,9 @@ public class DirectionTest {
     @Test
     public void testTurn() throws Exception {
         //Turn Left- Should now be facing left
-        d.turn(Left_or_Right.left);
-
-        assertEquals(d, Direction.Left);
+        int turn = d.turn(Left_or_Right.left);
+        System.out.println(d.toString());
+        assertEquals(Direction.fromInt(turn), Direction.DownRight);
     }
 
     @Test
